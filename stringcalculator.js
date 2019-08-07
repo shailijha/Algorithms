@@ -10,6 +10,7 @@ const input_string = '5 x 10';
 const input_string1 = '10 + 5 x 10 - 6';
 const input_string2 = '10 + 20 x 30 / 10 % 55 - 6';
 const input_string3 = '10 x 20 / 4 % 39 - 10 + 6';
+const input_string4 = '3 x 10';
 
 function tempCalculation(split_string,idx) {
   let operator = split_string[idx];
@@ -103,8 +104,39 @@ function stringCalculatorv3(input_string) {
   return split_string;
 }
 
+//version 1.3
+//if it encounters a number, change it into the base and then do the calculation
+function stringCalculatorv4(input_string,radix) {
+  //split_string[idx] != '+' || split_string[idx] != '-' || split_string[idx] != '/' || split_string[idx] != 'x' || split_string[idx] != '%'
+  let split_string = input_string.split(' ');
+  let idx = 0;
+  for(idx;idx < split_string.length; idx++) {
+    if(!isNaN(parseInt(split_string[idx]))) {
+      console.log(split_string[idx]);
+      let base_conversion = parseInt(split_string[idx],radix);
+      console.log('base_conversion ',base_conversion);
+      split_string[idx] = base_conversion;
+    }
+  }
+
+  idx = 0;
+
+  while(idx < split_string.length && split_string.length > 1) {
+    if(split_string[idx] == '+' || split_string[idx] == '-' || split_string[idx] == '/' || split_string[idx] == 'x' || split_string[idx] == '%') {
+      split_string = tempCalculation(split_string,idx);
+    }
+    else {
+      idx++;
+      continue;
+    }
+  }
+
+  return split_string;
+}
+
 console.log(`Version 1.0: ${input_string} = ${stringCalculatorv1(input_string)}`);
 console.log(`Version 1.1: ${input_string1} = ${stringCalculatorv2(input_string1)}`);
 console.log(`Version 1.2: ${input_string1} = ${stringCalculatorv3(input_string1)}`);
 console.log(`Version 1.2: ${input_string2} = ${stringCalculatorv3(input_string2)}`);
 console.log(`Version 1.2: ${input_string3} = ${stringCalculatorv3(input_string3)}`);
+console.log(`Version 1.3: ${input_string4} = ${stringCalculatorv4(input_string4,4)}`);
