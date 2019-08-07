@@ -11,6 +11,8 @@ const input_string1 = '10 + 5 x 10 - 6';
 const input_string2 = '10 + 20 x 30 / 10 % 55 - 6';
 const input_string3 = '10 x 20 / 4 % 39 - 10 + 6';
 const input_string4 = '3 x 10';
+const input_string5 = '100 x 10 + 22';
+const input_string6 = '22 + 10 x 100';
 
 function tempCalculation(split_string,idx) {
   let operator = split_string[idx];
@@ -112,18 +114,34 @@ function stringCalculatorv4(input_string,radix) {
   let idx = 0;
   for(idx;idx < split_string.length; idx++) {
     if(!isNaN(parseInt(split_string[idx]))) {
-      console.log(split_string[idx]);
+      //console.log(split_string[idx]);
       let base_conversion = parseInt(split_string[idx],radix);
-      console.log('base_conversion ',base_conversion);
+      //console.log('base_conversion ',base_conversion);
       split_string[idx] = base_conversion;
     }
   }
 
   idx = 0;
 
-  while(idx < split_string.length && split_string.length > 1) {
-    if(split_string[idx] == '+' || split_string[idx] == '-' || split_string[idx] == '/' || split_string[idx] == 'x' || split_string[idx] == '%') {
+  while(idx<split_string.length)
+  {
+    if(split_string[idx]=='/' || split_string[idx]=='x' || split_string[idx]=='%') {
       split_string = tempCalculation(split_string,idx);
+      //console.log('Group 1: ',split_string);
+    }
+    else {
+      idx++;
+      continue;
+    }
+  }
+
+  idx=0;
+
+  while(split_string.length>1) {
+    if(split_string[idx]=='+' || split_string[idx]=='-'){
+      split_string = tempCalculation(split_string,idx);
+      //console.log('Group 2: ',split_string);
+      continue;
     }
     else {
       idx++;
@@ -134,9 +152,73 @@ function stringCalculatorv4(input_string,radix) {
   return split_string;
 }
 
+//version 1.4
+function stringCalculatorv5(input_string,radix) {
+  //split_string[idx] != '+' || split_string[idx] != '-' || split_string[idx] != '/' || split_string[idx] != 'x' || split_string[idx] != '%'
+  let split_string = input_string.split(' ');
+  let idx = 0;
+  for(idx;idx < split_string.length; idx++) {
+    if(!isNaN(parseInt(split_string[idx]))) {
+      //console.log(split_string[idx]);
+      let base_conversion = parseInt(split_string[idx],radix);
+      //console.log('base_conversion ',base_conversion);
+      split_string[idx] = base_conversion;
+    }
+  }
+
+  idx = 0;
+
+  while(idx<split_string.length)
+  {
+    if(split_string[idx]=='/' || split_string[idx]=='x' || split_string[idx]=='%') {
+      split_string = tempCalculation(split_string,idx);
+      //console.log('Group 1: ',split_string);
+    }
+    else {
+      idx++;
+      continue;
+    }
+  }
+
+  idx=0;
+
+  while(split_string.length>1) {
+    if(split_string[idx]=='+' || split_string[idx]=='-'){
+      split_string = tempCalculation(split_string,idx);
+      //console.log('Group 2: ',split_string);
+      continue;
+    }
+    else {
+      idx++;
+      continue;
+    }
+  }
+
+  return converToBase(split_string,radix).reverse().join('');
+}
+
+function converToBase(input,base) {
+  let final_base_conversion = new Array();
+  let remainder = input%base;
+  let quotient = Math.floor(input/base);
+  final_base_conversion.push(remainder);
+
+  while(quotient>=base) {
+    remainder = quotient%base;
+    final_base_conversion.push(remainder);
+    quotient = Math.floor(quotient/base);
+  }
+  final_base_conversion.push(quotient);
+  return final_base_conversion;
+}
+
 console.log(`Version 1.0: ${input_string} = ${stringCalculatorv1(input_string)}`);
 console.log(`Version 1.1: ${input_string1} = ${stringCalculatorv2(input_string1)}`);
 console.log(`Version 1.2: ${input_string1} = ${stringCalculatorv3(input_string1)}`);
 console.log(`Version 1.2: ${input_string2} = ${stringCalculatorv3(input_string2)}`);
 console.log(`Version 1.2: ${input_string3} = ${stringCalculatorv3(input_string3)}`);
 console.log(`Version 1.3: ${input_string4} = ${stringCalculatorv4(input_string4,4)}`);
+console.log(`Version 1.3: ${input_string5} = ${stringCalculatorv4(input_string5,5)}`);
+console.log(`Version 1.4: ${input_string5} = ${stringCalculatorv5(input_string5,5)}`);
+console.log(`Version 1.3: ${input_string6} = ${stringCalculatorv4(input_string6,5)}`);
+console.log(`Version 1.4: ${input_string6} = ${stringCalculatorv5(input_string6,5)}`);
