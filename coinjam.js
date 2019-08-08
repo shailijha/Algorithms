@@ -1,9 +1,3 @@
-const test_case = 1;
-// n represents the length of the jamcoin
-const n = 5;
-//j represents the number of different jamcoins
-const j = 3;
-
 const base = new Array();
 
 //use parseInt() function to find the representation of the number in a base.
@@ -11,11 +5,9 @@ function populateBases() {
   for(let i=2;i<=10;i++) {
     base.push(i);
   }
-  console.log(base);
 }
 
 //write a function to generate all primes below 100
-
 function primeFactorsTo(max)
 {
     var store  = [], i, j, primes = [];
@@ -33,63 +25,7 @@ function primeFactorsTo(max)
     return primes;
 }
 
-let primes_below_100 = primeFactorsTo(100);
-
-/*1. the search space for the for loop is 2^(n-2)
-2.find out if the number is a prime number in each of the base. If yes, then it is not a jamcoin. Use
-the square root function and the primes below it to speed up the process
-3.find out the prime factorization of the number after representing it in each of the bases and have an array
-that keeps track of the non-trivial divisors
-4.Find all the primes below 100 by seive of erathoneses*/
-
-function coinjam(t,n,j) {
-
-  populateBases();
-
-  let all_strings = generatePossibleNumbers(n);
-  let possible_candidates = new Array();
-  for(let i = 0; i < all_strings.length; i++) {
-    let count = 0;
-    let candidate = possible_candidates[i];
-    for(let num = 0; num < base.length; num++) {
-      let temp_val = parseInt(input,base[num]);
-      if(!checkIfPrime(temp) && count<9) {
-        count++;
-        continue;
-      }
-      if(count==9) {
-        possible_candidates.push(candidate);
-      }
-    }
-  }
-
-  findPrimeFactorization(possible_candidates);
-}
-
-
-//1.convert the number into all bases.
-//2.find the prime factorization of the candidate in that base and if it doesn't leave a remainder
-//then it is a valid jamcoin
-
-//helper function for findIndex() JS function
-function largestPrime(val) {
-  return val>=sq_root
-}
-
-//To check if the number is Prime, find the square root, find all prime numbers up until the sq.root and
-//check to see if the given number divides evenly by any of them, If yes, return false. Else return true
-function checkIfPrime(number) {
-  let sq_root = Math.sqrt(number);
-  //get all the numbers below sq_root from the prime array and check against them
-  let largestPrimeIndex = primes_below_100.findIndex(largestPrime);
-  let candidates = primes_below_100.slice(largestPrimeIndex)
-  for(let num = 0; num < candidates.length; num++) {
-    if(number%candidates[num]==0) {
-      return false;
-    }
-  }
-  return true;
-}
+let primes_below_100 = new Array();
 
 //function to replace a character at a specific index of a string since there is no built-in function in JS
 function setCharAt(str,index,chr) {
@@ -109,7 +45,7 @@ function generatePossibleNumbers(n) {
     temp_str+='?';
   }
   temp_str+='1';
-  console.log(temp_str);
+  //console.log(temp_str);
 
   let temp_que = new Array();
   let final_que = new Array();
@@ -134,5 +70,118 @@ function generatePossibleNumbers(n) {
   return final_que;
 }
 
-//coinjam(test_case,n,j)
-generateBits(5);
+//To check if the number is Prime, find the square root, find all prime numbers up until the sq.root and
+//check to see if the given number divides evenly by any of them, If yes, return false. Else return true
+function checkPrime(number) {
+  //check if the number is part of primes_below_100
+  if(number%2==0 || number%3==0 || number%7==0) {
+    return false;
+  }
+  else if(primes_below_100.indexOf(number)!=-1) {
+    return true;
+  }
+  else {
+    let sq_root = Math.sqrt(number);
+    //console.log(`sqroot of ${number}:${sq_root}`);
+
+    //helper function for findIndex() JS function
+    function largestPrime(val) {
+      return val>sq_root
+    }
+
+    //get all the numbers below sq_root from the prime array and check against them
+    let largestPrimeIndex = primes_below_100.findIndex(largestPrime);
+    let candidates = primes_below_100.slice(0,largestPrimeIndex);
+
+    for(let num = 0; num < candidates.length; num++) {
+      if(number%candidates[num]==0) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+/*1. the search space for the for loop is 2^(n-2)
+2.find out if the number is a prime number in each of the base. If yes, then it is not a jamcoin. Use
+the square root function and the primes below it to speed up the process
+3.find out the prime factorization of the number after representing it in each of the bases and have an array
+that keeps track of the non-trivial divisors
+4.Find all the primes below 100 by seive of erathoneses*/
+
+function coinjam(n,j) {
+
+  populateBases();
+
+  primes_below_100 = primeFactorsTo(100);
+
+  let all_strings = generatePossibleNumbers(n);
+  console.log('all_strings ',all_strings);
+  let possible_candidates = new Array();
+  for(let i = 0; i < all_strings.length; i++) {
+    let count = 0;
+    let candidate = all_strings[i];
+    //console.log('candidate ',candidate);
+    for(let num = 0; num < base.length; num++) {
+      //console.log(`candidate,base[num],count: ${candidate} ${base[num]} ${count}`);
+      let temp_val = parseInt(candidate,base[num]);
+      if(!checkPrime(temp_val) && count<8) {
+        count+=1;
+        continue;
+      }
+      if(count==8) {
+        possible_candidates.push(candidate);
+      }
+    }
+  }
+
+  if(possible_candidates.length == 0) {
+    console.log('There are no jamcoins that satisfy the condition');
+  }
+  else {
+    console.log(possible_candidates);
+    findPrimeFactorization(possible_candidates,j);
+  }
+}
+
+
+//1.convert the number into all bases.
+//2.find the prime factorization of the candidate in that base and if it doesn't leave a remainder
+//then it is a valid jamcoin
+
+function findPrimeFactorization(possible_candidates,j) {
+  let final_result = new Array();
+  for(let i = 0; i < possible_candidates.length; i++)
+  {
+    let factors = new Array();
+    let candidate = possible_candidates[i];
+    for(let idx = 1; idx <= 9; idx++)
+    {
+      let temp_val = parseInt(candidate,idx+1);
+      let sq_root = Math.floor(Math.sqrt(temp_val));
+      //console.log(`${candidate} in base ${idx+1} is ${temp_val} and the sqrt is ${sq_root}`);
+      for(let num = 2;num <= sq_root; num++) {
+        if(temp_val % num == 0) {
+          //console.log(`${temp_val}/${num}:${Math.floor(temp_val/num)}`);
+          //factors.push(num);
+          factors.push(Math.floor(temp_val/num));
+          break;
+        }
+      }
+    }
+    if(final_result.length < j && factors.length == 9) {
+      console.log(`The factors of ${candidate} are ${factors}`);
+      final_result.push([candidate,...factors]);
+    }
+  }
+  console.log(final_result);
+}
+
+const test_case = 1;
+// n represents the length of the jamcoin
+const n = 6;
+//j represents the number of different jamcoins
+const j = 3;
+
+coinjam(n,j);
