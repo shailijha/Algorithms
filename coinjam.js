@@ -110,38 +110,49 @@ the square root function and the primes below it to speed up the process
 that keeps track of the non-trivial divisors
 4.Find all the primes below 100 by seive of erathoneses*/
 
-function coinjam(n,j) {
+function coinjam(t,n,j) {
+  if(t==1) {
+    let final_result = new Array();
+    populateBases();
 
-  populateBases();
+    primes_below_100 = primeFactorsTo(100);
 
-  primes_below_100 = primeFactorsTo(100);
-
-  let all_strings = generatePossibleNumbers(n);
-  console.log('all_strings ',all_strings);
-  let possible_candidates = new Array();
-  for(let i = 0; i < all_strings.length; i++) {
-    let count = 0;
-    let candidate = all_strings[i];
-    //console.log('candidate ',candidate);
-    for(let num = 0; num < base.length; num++) {
-      //console.log(`candidate,base[num],count: ${candidate} ${base[num]} ${count}`);
-      let temp_val = parseInt(candidate,base[num]);
-      if(!checkPrime(temp_val) && count<8) {
-        count+=1;
-        continue;
-      }
-      if(count==8) {
-        possible_candidates.push(candidate);
+    let all_strings = generatePossibleNumbers(n);
+    //console.log('all_strings ',all_strings);
+    let possible_candidates = new Array();
+    for(let i = 0; i < all_strings.length; i++) {
+      let count = 0;
+      let candidate = all_strings[i];
+      //console.log('candidate ',candidate);
+      for(let num = 0; num < base.length; num++) {
+        //console.log(`candidate,base[num],count: ${candidate} ${base[num]} ${count}`);
+        let temp_val = parseInt(candidate,base[num]);
+        if(!checkPrime(temp_val) && count<8) {
+          count+=1;
+          continue;
+        }
+        if(count==8) {
+          possible_candidates.push(candidate);
+        }
       }
     }
-  }
 
-  if(possible_candidates.length == 0) {
-    console.log('There are no jamcoins that satisfy the condition');
+    if(possible_candidates.length == 0) {
+      console.log('There are no jamcoins that satisfy the condition');
+    }
+    else {
+      //console.log(possible_candidates);
+      final_result = findPrimeFactorization(possible_candidates,j);
+    }
+
+    let result_str = `Case #${test_case}: \n`;
+    for(let i = 0; i < final_result.length; i++) {
+      result_str += `${final_result[i].join(' ')} \n`;
+    }
+    return result_str;
   }
   else {
-    console.log(possible_candidates);
-    findPrimeFactorization(possible_candidates,j);
+    console.log('Invalid number of test cases');
   }
 }
 
@@ -149,7 +160,6 @@ function coinjam(n,j) {
 //1.convert the number into all bases.
 //2.find the prime factorization of the candidate in that base and if it doesn't leave a remainder
 //then it is a valid jamcoin
-
 function findPrimeFactorization(possible_candidates,j) {
   let final_result = new Array();
   for(let i = 0; i < possible_candidates.length; i++)
@@ -171,17 +181,18 @@ function findPrimeFactorization(possible_candidates,j) {
       }
     }
     if(final_result.length < j && factors.length == 9) {
-      console.log(`The factors of ${candidate} are ${factors}`);
+      //console.log(`The factors of ${candidate} are ${factors}`);
       final_result.push([candidate,...factors]);
     }
   }
-  console.log(final_result);
+  //console.log(final_result);
+  return final_result;
 }
 
 const test_case = 1;
 // n represents the length of the jamcoin
-const n = 6;
+const n = 5;
 //j represents the number of different jamcoins
-const j = 3;
+const j = 1;
 
-coinjam(n,j);
+console.log(coinjam(test_case,n,j));
