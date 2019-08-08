@@ -191,8 +191,11 @@ function findPrimeFactorization(possible_candidates,j) {
 
 const test_case = 1;
 // n represents the length of the jamcoin
-const n = 5;
+const n = 32;
 //j represents the number of different jamcoins
-const j = 1;
+const j = 500;
 
 console.log(coinjam(test_case,n,j));
+/*1. n=16/j=50 takes 20 seconds to run
+2. n=32/j=500 gives FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out 
+of memory*/
