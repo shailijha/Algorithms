@@ -1,0 +1,36 @@
+
+/*console.log('matching positions, cc>0, cp>0')
+console.log(cc_map);
+console.log(cp_map);
+console.log(`position matches cc>0, cp>0 guess and code ${guess_split} ${code_split}`);*/
+
+/*console.log('matching positions, cc>0, cp=0')
+console.log(cc_map);
+console.log(cp_map);
+console.log(`position matches cc>0, cp=0 guess and code ${guess_split} ${code_split}`);*/
+
+/*console.log('matching positions, cc=0, cp=0')
+console.log(cc_map);
+console.log(cp_map);
+console.log(`position matches cc=0 guess and code ${guess_split} ${code_split}`);*/
+
+/*console.log('cc_map and cp_map after');
+console.log(cc_map);
+console.log(cp_map);
+console.log(`position doesn't match outside if/else if cc=0, cp!=0 guess and code ${guess_split} ${code_split}`);*/
+
+/*console.log('Not matching positions Else')
+console.log(cc_map);
+console.log(cp_map);
+console.log(`position doesn't match cc>0, cp=0 guess and code ${guess_split} ${code_split}`);*/
+
+
+/*console.log('Not matching positions If')
+console.log(cc_map);
+console.log(cp_map);
+console.log(`position doesn't if if match cc=0, cp=0 guess and code ${guess_split} ${code_split}`);*/
+
+
+/*console.log('cc_map and cp_map before');
+console.log(cc_map);
+console.log(cp_map);*/
