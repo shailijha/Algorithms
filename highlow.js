@@ -108,15 +108,55 @@ function highLowv4(current_card, guess) {
 
 //Version 1.4
 function highLowv5(current_card, guess) {
+  console.log('current card in v5');
+  console.log(current_card);
+
+  let flag = true;
+  let next_card = generateNextCard(current_card,flag);
+  console.log('next card in v5');
+  console.log(next_card);
+  /*while(flag) {
+    next_card.suit = suits[randomNumber(0,3)];
+    next_card.value = randomNumber(2,14);
+
+    if(current_card.suit === next_card.suit && current_card.value === next_card.value) {
+      next_card.suit = suits[randomNumber(0,3)];
+      next_card.value = randomNumber(2,14);
+      flag = true;
+    }
+    else {
+      flag = false;
+    }
+  }*/
+
+  current_card = current_card.value;
+
+  if(face_cards.has(current_card)) {
+    current_card = face_cards.get(current_card);
+  }
+  console.log(`guess in v5 ${guess}`);
+  console.log(`current card in v5 ${current_card}`);
+  if(current_card.value === next_card.value) {
+    return 'draw';
+  }
+  let result = '';
+  if(current_card.value > next_card.value) {
+    result = (guess === 'high') ?  'lose' :  'win';
+    result = (guess === 'low') ?  'win' :  'lose';
+  }
+  else {
+    result = (guess === 'high') ? 'win' : 'lose';
+    result = (guess === 'low') ?  'lose' :  'win';
+  }
+  console.log('result ',result);
+  return result;
+}
+
+function generateNextCard(flag,current_card) {
   let next_card = {
     suit: '',
     value: 0
   };
-  console.log('current card in v5');
-  console.log(current_card);
-
-  console.log(`next card in v5 ${next_card}`);
-  let flag = true;
 
   while(flag) {
     next_card.suit = suits[randomNumber(0,3)];
@@ -131,32 +171,33 @@ function highLowv5(current_card, guess) {
       flag = false;
     }
   }
-  console.log('random suit and value next card ',next_card);
 
-  current_card = current_card.value;
+  return next_card;
+}
 
-  if(face_cards.has(current_card)) {
-    current_card = face_cards.get(current_card);
-  }
-  console.log(current_card);
-  console.log(`guess in v5 ${guess}`);
-  if(current_card.value === next_card.value) {
-    return 'draw';
-  }
+//version 2.0
+function highLowv6(guess) {
+  console.log(guess);
 
-  if(current_card.value > next_card.value) {
-    return (guess === 'high') ?  'lose' :  'win';
-  }
-  else {
-    return (guess === 'high') ? 'win' : 'lose';
-  }
+  let current_card = {
+    suit: suits[randomNumber(0,3)],
+    value: randomNumber(2,14)
+  };
+
+  let next_card = {
+    suit: '',
+    value: 0
+  };
+
+
 }
 
 //console.log(highLowv1(current_card_value,guess));
 //console.log(highLowv2(current_card_value,guess));
-console.log(highLowv3(current_card,guess));
+/*console.log(highLowv3(current_card,guess));
 console.log('card', current_card);
 console.log(highLowv4(current_card,guess));
-console.log('card', current_card);
+console.log('card', current_card);*/
 console.log(highLowv5(current_card,guess));
-console.log('card', current_card);
+//console.log('card', current_card);
+//highLowv6('low');
