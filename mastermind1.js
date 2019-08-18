@@ -6,10 +6,11 @@ correct position
 1.2 accept an 8 char code;accept any numerical values
 2.0 create an encompassing function that tracks no. of guesses and returns game over when it exceeds
 the number of guesses
-2.1 return true if the guess is correct*/
+2.1 return true if the guess is correct
+Ask the answer for 1014 and 2315*/
 
-const guess = "1122";
-const code = "1212";
+const guess = "1014";
+const code = "2315";
 
 let count_char = 0;
 let count_correct_posn = 0;
@@ -29,12 +30,11 @@ function masterMind(guess,code) {
       if(guess_split[num] === code_split[num1]) {
         // If pos doesn't matches
         if(num !== num1) {
-          console.log(`${num} ${num1}`);
           if(!cc_map.has(code_split[num1]) && !cp_map.has(code_split[num1])) {
             if(count_char == 0) {
               count_char += 1;
               cc_map.set(code_split[num1], count_char);
-              console.log('Not matching positions If')
+              //console.log('Not matching positions If')
               console.log(cc_map);
               console.log(cp_map);
               console.log(`position doesn't if if match cc=0, cp=0 guess and code ${guess_split} ${code_split}`);
@@ -45,20 +45,21 @@ function masterMind(guess,code) {
             let temp_count_char = cc_map.get(code_split[num1]);
             temp_count_char += 1;
             cc_map.set(code_split[num1], temp_count_char);
-            console.log('Not matching positions Else')
+            //console.log('Not matching positions Else')
             console.log(cc_map);
             console.log(cp_map);
             console.log(`position doesn't match cc>0, cp>0 guess and code ${guess_split} ${code_split}`);
           }
           guess_split[num] = '';
+          if(num > num1) {
+            code_split[num1] = '';
+          }
           //code_split[num1] = '';
           count_char = 0;
           console.log('If pos doesnt matches ', guess_split, code_split);
         }
         //If position matches
         else {
-          console.log('cc_map.get(code_split[num1]) ',cc_map.get(code_split[num1]));
-          console.log('!cc_map.has(code_split[num1]) && !cp_map.has(code_split[num1])',!cc_map.has(code_split[num1]) && !cp_map.has(code_split[num1]))
           if(!cc_map.has(code_split[num1]) && !cp_map.has(code_split[num1])) {
             count_char += 1;
             count_correct_posn += 1;
@@ -66,28 +67,31 @@ function masterMind(guess,code) {
             cp_map.set(code_split[num1], count_correct_posn);
             //guess_split[num] = '';
             //code_split[num1] = '';
-            console.log('matching positions, cc=0, cp=0')
+            //console.log('matching positions, cc=0, cp=0')
             console.log(cc_map);
             console.log(cp_map);
             console.log(`position matches cc=0, cp=0 guess and code ${guess_split} ${code_split}`);
           }
           else if(cc_map.get(code_split[num1]) > 0) {
+            let temp_count_char = cc_map.get(code_split[num1]);
+            temp_count_char += 1;
+            cc_map.set(code_split[num1], temp_count_char);
             if(cp_map.get(code_split[num1]) == undefined) {
               count_correct_posn += 1;
               cp_map.set(code_split[num1], count_correct_posn);
-              console.log('matching positions, cc>0, cp=0')
+              //console.log('matching positions, cc>0, cp=0')
               console.log(cc_map);
               console.log(cp_map);
               console.log(`position matches cc>0, cp=0 guess and code ${guess_split} ${code_split}`);
             }
             else {
-              let temp_count_char = cc_map.get(code_split[num1]);
-              temp_count_char += 1;
-              cc_map.set(code_split[num1], temp_count_char);
+              //let temp_count_char = cc_map.get(code_split[num1]);
+              //temp_count_char += 1;
+              //cc_map.set(code_split[num1], temp_count_char);
               let temp_count_posn = cp_map.get(code_split[num1]);
               temp_count_posn += 1;
               cp_map.set(code_split[num1], temp_count_posn);
-              console.log('matching positions, cc>0, cp>0')
+              //console.log('matching positions, cc>0, cp>0')
               console.log(cc_map);
               console.log(cp_map);
               console.log(`position matches cc>0, cp>0 guess and code ${guess_split} ${code_split}`);
@@ -102,9 +106,9 @@ function masterMind(guess,code) {
       }
     }
   }
-  console.log(`${count_char}  ${count_correct_posn}`);
-  console.log(cc_map);
-  console.log(cp_map);
+  //console.log(`${count_char}  ${count_correct_posn}`);
+  //console.log(cc_map);
+  //console.log(cp_map);
 
   for(const v of cc_map.values()) {
     count_char += v;
@@ -114,7 +118,8 @@ function masterMind(guess,code) {
     count_correct_posn += v;
   }
 
-  console.log(`${count_char}  ${count_correct_posn}`);
+  console.log(`No. of characters that match: ${count_char}  No. of characters that match and are in the
+    right position:${count_correct_posn}`);
 }
 
 masterMind(guess,code);
