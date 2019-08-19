@@ -25,7 +25,17 @@ function masterMind(guess,code) {
   for(let num = 0; num < guess_split.length; num ++) {
     for(let num1 = 0; num1 < code_split.length; num1++) {
       if(guess_split[num] === code_split[num1]) {
-        count_char += 1;
+        if(num !== num1) {
+          if(!cc_map.has(code_split[num1])) {
+            count_char += 1;
+            cc_map.set(code_split[num1], count_char);
+            guess_split[num] = '';
+          }
+          else if(cc_map.has(code_split[num1])) {
+            guess_split[num] = '';
+          }
+          count_char = 0;
+        }
       }
     }
   }
