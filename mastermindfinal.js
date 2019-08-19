@@ -22,8 +22,15 @@ function masterMind(guess,code) {
   let guess_split = guess.split('');
   let code_split = code.split('');
   console.log(`guess_split: ${guess_split}, code_split: ${code_split}`);
-  
+  for(let num = 0; num < guess_split.length; num ++) {
+    for(let num1 = 0; num1 < code_split.length; num1++) {
+      if(guess_split[num] === code_split[num1]) {
+        count_char += 1;
+      }
+    }
+  }
   console.log('cc_map final');console.log(cc_map);console.log('cp_map final');console.log(cp_map);
+  console.log(count_char);
   //console.log(`guess_split: ${guess_split}, code_split: ${code_split}`);
 }
 
