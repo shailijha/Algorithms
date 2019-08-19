@@ -9,8 +9,8 @@ the number of guesses
 2.1 return true if the guess is correct
 Ask the answer for 1014 and 2315*/
 
-const guess = "55555";
-const code = "12359";
+const guess = "1122";
+const code = "1212";
 
 let count_char = 0;
 let count_correct_posn = 0;
@@ -26,13 +26,23 @@ function masterMind(guess,code) {
     for(let num1 = 0; num1 < code_split.length; num1++) {
       if(guess_split[num] === code_split[num1]) {
         if(num !== num1) {
-          if(!cc_map.has(code_split[num1])) {
+          console.log(cp_map.has(code_split[num1]));
+          if(!cc_map.has(code_split[num1]) && !cp_map.has(code_split[num1])) {
             count_char += 1;
             cc_map.set(code_split[num1], count_char);
             guess_split[num] = '';
+            console.log(`POSITION DOESN'T MATCH IF guess_split: ${guess_split}, code_split: ${code_split}`);
+            console.log(cc_map);console.log(cp_map);
+            console.log();
           }
-          else if(cc_map.has(code_split[num1])) {
+          else if(cc_map.has(code_split[num1]) && cp_map.has(code_split[num1])) {
+            let temp_count_char = cc_map.get(code_split[num1]);
+            temp_count_char += 1;
+            cc_map.set(code_split[num1], temp_count_char);
             guess_split[num] = '';
+            console.log(`POSITION DOESN'T MATCH ELSE IF guess_split: ${guess_split}, code_split: ${code_split}`);
+            console.log(cc_map);console.log(cp_map);
+            console.log();
           }
           count_char = 0;
         }
@@ -43,11 +53,17 @@ function masterMind(guess,code) {
             cc_map.set(code_split[num1], count_char);
             cp_map.set(code_split[num1], count_correct_posn);
             code_split[num1] = ''; guess_split[num] = '';
+            console.log(`POSITION MATCHES IF guess_split: ${guess_split}, code_split: ${code_split}`);
+            console.log(cc_map);console.log(cp_map);
+            console.log();
           }
           else if(cc_map.has(code_split[num1]) && !cp_map.has(code_split[num1])) {
             count_correct_posn += 1;
             cp_map.set(code_split[num1], count_correct_posn);
             code_split[num1] = ''; guess_split[num] = '';
+            console.log(`POSITION MATCHES ELSE IF 1 guess_split: ${guess_split}, code_split: ${code_split}`);
+            console.log(cc_map);console.log(cp_map);
+            console.log();
           }
           else if(cc_map.has(code_split[num1]) && cp_map.has(code_split[num1])) {
             let temp_count_char = cc_map.get(code_split[num1]);
@@ -57,6 +73,9 @@ function masterMind(guess,code) {
             cc_map.set(code_split[num1], temp_count_char)
             cp_map.set(code_split[num1], temp_count_posn);
             code_split[num1] = ''; guess_split[num] = '';
+            console.log(`POSITION MATCHES ELSE IF 2 guess_split: ${guess_split}, code_split: ${code_split}`);
+            console.log(cc_map);console.log(cp_map);
+            console.log();
           }
           count_char = 0;
           count_correct_posn = 0;
