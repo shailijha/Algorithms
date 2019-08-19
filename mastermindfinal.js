@@ -36,11 +36,36 @@ function masterMind(guess,code) {
           }
           count_char = 0;
         }
+        else if(num === num1) {
+          if(!cc_map.has(code_split[num1]) && !cp_map.has(code_split[num1])) {
+            count_char += 1;
+            count_correct_posn += 1;
+            cc_map.set(code_split[num1], count_char);
+            cp_map.set(code_split[num1], count_correct_posn);
+            code_split[num1] = ''; guess_split[num] = '';
+          }
+          else if(cc_map.has(code_split[num1]) && !cp_map.has(code_split[num1])) {
+            count_correct_posn += 1;
+            cp_map.set(code_split[num1], count_correct_posn);
+            code_split[num1] = ''; guess_split[num] = '';
+          }
+          else if(cc_map.has(code_split[num1]) && cp_map.has(code_split[num1])) {
+            let temp_count_char = cc_map.get(code_split[num1]);
+            let temp_count_posn = cp_map.get(code_split[num1]);
+            temp_count_char += 1;
+            temp_count_posn += 1;
+            cc_map.set(code_split[num1], temp_count_char)
+            cp_map.set(code_split[num1], temp_count_posn);
+            code_split[num1] = ''; guess_split[num] = '';
+          }
+          count_char = 0;
+          count_correct_posn = 0;
+        }
       }
     }
   }
   console.log('cc_map final');console.log(cc_map);console.log('cp_map final');console.log(cp_map);
-  console.log(count_char);
+  //console.log(count_char);
   //console.log(`guess_split: ${guess_split}, code_split: ${code_split}`);
 }
 
