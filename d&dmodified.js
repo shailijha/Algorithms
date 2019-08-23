@@ -19,10 +19,6 @@ class Dice {
     return this.diceRoll = Math.floor(Math.random() * (+max - +min)) + +min;
   }
 
-  //detectCritical() {
-    //return this.dice === 1 ? ('Critical Miss') : (this.dice === 20 ? 'Critical Hit' : 'Continue');
-  //}
-
   determineHit(enemyAC) {
     console.log(this.dice+parseInt(modifier));
     return (this.dice+parseInt(modifier)) <= enemyAC ? ('Miss') : ('Hit');
@@ -34,6 +30,12 @@ class Attack {
     console.log(dice.diceRoll);
     return dice.diceRoll === 1 ? ('Critical Miss') : (dice.diceRoll === 20 ? 'Critical Hit' : 'Continue');
   }
+
+  static determineHit(dice, enemyAC) {
+    console.log(dice.diceRoll+parseInt(modifier));
+    let newDiceRoll = dice.diceRoll+parseInt(modifier);
+    return newDiceRoll <= enemyAC ? ('Miss') : ('Hit');
+  }
 }
 
 /*function detectCritical(dice) {
@@ -41,18 +43,23 @@ class Attack {
   return this.diceRoll === 1 ? ('Critical Miss') : (this.dice === 20 ? 'Critical Hit' : 'Continue');
 }*/
 
-//var sample = new Dice(20);
+var sample = new Dice(20);
 
 var test = {
   sides: 20,
   diceRoll: 20
 };
 
-//console.log(`The roll of the ${sample.sides}-sided dice is ${sample.rollDice()}`);
-//console.log(sample);
-console.log(test);
+var modifier = "20";
+
+var enemyAC = 41;
+
+console.log(`The roll of the ${sample.sides}-sided dice is ${sample.rollDice()}`);
+console.log(sample);
+//console.log(test);
 //detectCritical(sample)
-console.log(`Detect Critical is ${Attack.detectCritical(test)}`);
+console.log(`Detect Critical is ${Attack.detectCritical(sample)}`);
+console.log(`Determine Hit is ${Attack.determineHit(sample,enemyAC)}`);
 
 /*var criticalState = sample.detectCritical();
 
