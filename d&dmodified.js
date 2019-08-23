@@ -18,30 +18,37 @@ class Dice {
     let max = this.sides;
     return this.diceRoll = Math.floor(Math.random() * (+max - +min)) + +min;
   }
-
-  determineHit(enemyAC) {
-    console.log(this.dice+parseInt(modifier));
-    return (this.dice+parseInt(modifier)) <= enemyAC ? ('Miss') : ('Hit');
-  }
 }
 
 class Attack {
   static detectCritical(dice) {
-    console.log(dice.diceRoll);
+    //console.log(dice.diceRoll);
     return dice.diceRoll === 1 ? ('Critical Miss') : (dice.diceRoll === 20 ? 'Critical Hit' : 'Continue');
   }
 
   static determineHit(dice, enemyAC) {
-    console.log(dice.diceRoll+parseInt(modifier));
+    //console.log(dice.diceRoll+parseInt(modifier));
     let newDiceRoll = dice.diceRoll+parseInt(modifier);
     return newDiceRoll <= enemyAC ? ('Miss') : ('Hit');
   }
-}
 
-/*function detectCritical(dice) {
-  console.log(dice.diceRoll);
-  return this.diceRoll === 1 ? ('Critical Miss') : (this.dice === 20 ? 'Critical Hit' : 'Continue');
-}*/
+  static calculateDamage(weaponDamage){
+    weaponDamage = weaponDamage.split('');
+    let times = weaponDamage[0]; let side = weaponDamage[2];
+    let hitDice = new Dice(side);
+    console.log(times, side, hitDice);
+    let result = 0;
+    for(let i=0;i<times;i++) {
+      console.log('Result before attack ',result);
+      let temp = hitDice.rollDice();
+      console.log('temp is ',temp);
+      result += temp;
+      console.log('Result after attack ',result);
+    }
+    console.log(`You got to Hit and your damage is ${result}`);
+    //console.log(weaponDamage);
+  }
+}
 
 var sample = new Dice(20);
 
@@ -52,7 +59,7 @@ var test = {
 
 var modifier = "20";
 
-var enemyAC = 41;
+var enemyAC = 5;
 
 console.log(`The roll of the ${sample.sides}-sided dice is ${sample.rollDice()}`);
 console.log(sample);
@@ -60,6 +67,10 @@ console.log(sample);
 //detectCritical(sample)
 console.log(`Detect Critical is ${Attack.detectCritical(sample)}`);
 console.log(`Determine Hit is ${Attack.determineHit(sample,enemyAC)}`);
+if(Attack.determineHit(sample,enemyAC) === 'Hit') {
+  let weaponDamage = '2d6';
+  Attack.calculateDamage(weaponDamage)
+}
 
 /*var criticalState = sample.detectCritical();
 
