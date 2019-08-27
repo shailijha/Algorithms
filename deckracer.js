@@ -6,13 +6,13 @@ or greater than the number. The  player to reach there first is the winner*/
 //Create classes for dice and card.Deck class should have function for shuffling, creation and layout of the
 //cards
 class Dice {
-  //constructor to initialize the dice
+  //constructor to initialize the dice. Refactored from simpled&d
   constructor(value) {
     this.sides = value;
     this.diceRoll = 0;
   }
 
-  //function to roll an n-sided dice
+  //function to roll an n-sided dice.  Refactored from simpled&d
   rollDice() {
     let max = this.sides;
     return this.diceRoll = Math.floor(Math.random() * (+max - +min)) + +min;
@@ -24,9 +24,8 @@ const min = 0;
 const max = 27;
 let invalidCards = [1,2,6,7];
 class Deck {
-  //const suits = ['clubs', 'spades', 'hearts', 'diamonds'];
-  //const cards = [1,2,3,4,5,6,7];
 
+  //function to create the deck. Refactored from best hand algo
   static createDeck() {
     for (let i = 0; i < 4; i++) {
       for (let j = 1; j <= 7; j++) {
@@ -36,6 +35,7 @@ class Deck {
     }
   }
 
+  //function to shuffle the array. Refactored from best hand algo
   static shuffle(array) {
     var currentIndex = array.length,
       temporaryValue,
@@ -56,6 +56,7 @@ class Deck {
     return array;
   }
 
+  //function to check if card is valid
   static checkValid(value) {
     if(invalidCards.indexOf(value) > -1) {
       return true;
@@ -63,15 +64,17 @@ class Deck {
     return false;
   }
 
+  /*function to check the validity of edge cards. Keeps generating random index to swap with until it
+  finds a card that is not of the same index or not one of the invalid cards*/
   static checkValidity(card,index) {
     if(Deck.checkValid(card.value)) {
-      let randIdx = Deck.swap();
+      let randIdx = Deck.generateRandomCardIndex();
       //console.log(`randIdx in firstCard ${randIdx}`);
       //console.log('deck[randIdx] in first card');
       //console.log(deck[randIdx].value);
       //console.log(Deck.checkValid(deck[randIdx].value));
       while(randIdx === index && Deck.checkValid(deck[randIdx].value)) {
-        randIdx = Deck.swap();
+        randIdx = Deck.generateRandomCardIndex();
         //console.log(`randIdx in while firstCard ${randIdx}`)
       }
       console.log(`values before swapping in ${index} card`);
@@ -84,6 +87,8 @@ class Deck {
     }
   }
 
+  /*function to check the deck after swapping. Calls checkValidity for the edge cards until they
+  aren't [1,2,6,7]*/
   static checkDeck() {
     let firstCard = deck[0];
     let secondCard = deck[1];
@@ -104,7 +109,8 @@ class Deck {
     }
   }
 
-  static swap() {
+  //function to pick random card index
+  static generateRandomCardIndex() {
     return Math.floor(Math.random() * (+max - +min)) + +min;
   }
 }
