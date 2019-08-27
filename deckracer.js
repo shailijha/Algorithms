@@ -126,8 +126,8 @@ class Player {
   /*function for navigation of player. Player rolls dice. checks to see if the roll value is less
   than or equal to deck[0].value. if yes, then sets current position to 0 and increments i. Else,
   runs a while loop until it reaches a card that has a higher value than the roll*/
-  navigate(player) {
-    console.log('in player navigate function');
+  navigate(player,idx) {
+    console.log(`in player ${idx} navigate function`);
     this.playerDiceRoll = sixSidedDice.rollDice();
     //console.log('dice roll ',this.playerDiceRoll);
     console.log(player);
@@ -141,7 +141,7 @@ class Player {
       this.i += 1;
       console.log(player);
     }else {
-      while(this.playerDiceRoll > deck[this.i].value && this.i < 28) {
+      while(this.i < 28 && this.playerDiceRoll > deck[this.i].value) {
         if(this.playerDiceRoll == deck[this.i].value) {
           break;
         }
@@ -171,10 +171,18 @@ Deck.checkDeck();
 console.log('check deck');
 console.log(deck);
 
-let player1 = new Player();
-while(player1.current_position!=27) {
-    player1.navigate(player1);
+function playGame() {
+  let player1 = new Player();
+  let player2 = new Player();
+  while(player1.current_position != 27 || player2.current_position != 27) {
+      player1.navigate(player1,1);
+      player2.navigate(player2,2);
+  }
+  player1.current_position == 27 ? console.log('Player 1 won the game') : console.log('Player 2 won the game')
 }
+
+playGame();
+
 /*console.log(sixSidedDice);
 console.log(sixSidedDice.rollDice());
 console.log(sixSidedDice);*/
