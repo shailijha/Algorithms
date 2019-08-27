@@ -13,8 +13,8 @@ Ask the answer for 1014 and 2315*/
 //soluttion - check if there is a num matching it above that character. if yes, then skip that char coz you are going
 //to encounter it later on.
 
-const guess = "1014";
-const code = "2315";
+const guess = "1122";
+const code = "1212";
 
 let count_char = 0;
 let count_correct_posn = 0;
