@@ -15,14 +15,10 @@ class Dice {
   //function to roll an n-sided dice.  Refactored from simpled&d
   rollDice() {
     let max = this.sides;
-    return this.diceRoll = Math.floor(Math.random() * (+max - +min)) + +min;
+    return this.diceRoll = Math.floor(Math.random() * (+max - +minDiceRoll)) + +minDiceRoll;
   }
 }
 
-var deck = new Array();
-const min = 0;
-const max = 27;
-let invalidCards = [1,2,6,7];
 class Deck {
 
   //function to create the deck. Refactored from best hand algo
@@ -115,13 +111,27 @@ class Deck {
   }
 }
 
+var deck = new Array();
+var sixSidedDice = new Dice(6);
+
+//constants for minimum and maximum values of Card and minimum roll of Dice
+const minCard = 0;
+const maxCard = 27;
+const minDiceRoll = 1;
+
+console.log(sixSidedDice);
+console.log(sixSidedDice.rollDice());
+console.log(sixSidedDice);
+
+let invalidCards = [1,2,6,7];
+
 //console.log(deck);
-Deck.createDeck();
+/*Deck.createDeck();
 //console.log(deck);
 Deck.shuffle(deck);
 console.log('shuffle deck');
 console.log(deck);
 Deck.checkDeck();
 console.log('check deck');
-console.log(deck);
+console.log(deck);*/
 //console.log(deck.length);
