@@ -63,77 +63,44 @@ class Deck {
     return false;
   }
 
+  static checkValidity(card,index) {
+    if(Deck.checkValid(card.value)) {
+      let randIdx = Deck.swap();
+      //console.log(`randIdx in firstCard ${randIdx}`);
+      //console.log('deck[randIdx] in first card');
+      //console.log(deck[randIdx].value);
+      //console.log(Deck.checkValid(deck[randIdx].value));
+      while(randIdx === index && Deck.checkValid(deck[randIdx].value)) {
+        randIdx = Deck.swap();
+        //console.log(`randIdx in while firstCard ${randIdx}`)
+      }
+      console.log(`values before swapping in ${index} card`);
+      console.log(deck[index],deck[randIdx]);
+      let temp = deck[randIdx];
+      deck[randIdx] = card;
+      deck[index] = temp;
+      console.log(`values after swapping in ${index} card`);
+      console.log(deck[index],deck[randIdx]);
+    }
+  }
+
   static checkDeck() {
     let firstCard = deck[0];
     let secondCard = deck[1];
     let lastoneCard = deck[26];
     let lastCard = deck[27];
     console.log(firstCard);console.log(secondCard);console.log(lastoneCard);console.log(lastCard);
-    if(Deck.checkValid(firstCard.value)) {
-      let randIdx = Deck.swap();
-      console.log(`randIdx in firstCard ${randIdx}`);
-      console.log('deck[randIdx] in first card');
-      console.log(deck[randIdx].value);
-      console.log(Deck.checkValid(deck[randIdx].value));
-      while(randIdx === 0 && Deck.checkValid(deck[randIdx].value)) {
-        randIdx = Deck.swap();
-        console.log(`randIdx in while firstCard ${randIdx}`)
-      }
-      console.log('values before swapping in first card');
-      console.log(deck[0],deck[randIdx]);
-      let temp = deck[randIdx];
-      deck[randIdx] = firstCard;
-      deck[0] = temp;
-      console.log('values after swapping in first card');
-      console.log(deck[0],deck[randIdx]);
-    }
-    if(Deck.checkValid(secondCard.value)) {
-      let randIdx = Deck.swap();
-      console.log(`randIdx in secondCard ${randIdx}`);
-      console.log('deck[randIdx] in second card');
-      console.log(deck[randIdx]);
-      while(randIdx === 1 && Deck.checkValid(deck[randIdx].value)) {
-        randIdx = Deck.swap();
-      }
-      console.log('values before swapping in second card');
-      console.log(deck[1],deck[randIdx]);
-      let temp = deck[randIdx];
-      deck[randIdx] = secondCard;
-      deck[1] = temp;
-      console.log('values after swapping in second card');
-      console.log(deck[1],deck[randIdx]);
-    }
-    if(Deck.checkValid(lastoneCard.value)) {
-      let randIdx = Deck.swap();
-      console.log(`randIdx in lastoneCard ${randIdx}`);
-      console.log('deck[randIdx] in lastoneCard card');
-      console.log(deck[randIdx]);
-      while(randIdx === 26 && Deck.checkValid(deck[randIdx].value)) {
-        randIdx = Deck.swap();
-      }
-      console.log('values before swapping in lastoneCard card');
-      console.log(deck[26],deck[randIdx]);
-      let temp = deck[randIdx];
-      deck[randIdx] = lastoneCard;
-      deck[26] = temp;
-      console.log('values after swapping in lastoneCard card');
-      console.log(deck[26],deck[randIdx]);
-    }
-    if(Deck.checkValid(lastCard.value)) {
-      let randIdx = Deck.swap();
-      console.log(`randIdx in lastCard ${randIdx}`);
-      console.log('deck[randIdx] in lastCard card');
-      console.log(deck[randIdx]);
-      while(randIdx === 27 && Deck.checkValid(deck[randIdx].value)) {
-        randIdx = Deck.swap();
-      }
-      console.log('values before swapping in lastCard card');
-      console.log(deck[27],deck[randIdx]);
-      let temp = deck[randIdx];
-      deck[randIdx] = lastCard;
-      deck[27] = temp;
-      console.log('values after swapping in lastCard card');
-      console.log(deck[27],deck[randIdx]);
+    console.log(Deck.checkValid(firstCard.value));console.log(Deck.checkValid(secondCard.value));
+    console.log(Deck.checkValid(lastoneCard.value));console.log(Deck.checkValid(lastCard.value));
+    while(Deck.checkValid(firstCard.value) || Deck.checkValid(secondCard.value) || Deck.checkValid(lastoneCard.value) || Deck.checkValid(lastCard.value)) {
+      Deck.checkValidity(firstCard,0);
+      Deck.checkValidity(secondCard,1);
+      Deck.checkValidity(lastoneCard,26);
+      Deck.checkValidity(lastCard,27);
+      firstCard = deck[0];
+      secondCard = deck[1];
+      lastoneCard = deck[26];
+      lastCard = deck[27];
     }
   }
 
