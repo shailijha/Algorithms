@@ -157,15 +157,6 @@ class Player
     this.blackDiceRoll = 0;
     this.redDiceRoll = 0;
     this.stopValue = 0;
-    /*this.current_position = -1;
-    this.current_value = -1;
-    this.next_move = 0;
-    this.marker1 = -1;
-    this.marker2 = -1;
-    this.marker3 = -1;
-    this.marker1.card = -1;
-    this.marker2.card = -1;
-    this.marker3.card = -1;*/
   }
 
   rollDice() {
@@ -178,18 +169,22 @@ class Player
 class Marker
 {
   constructor() {
-    //super();
     this.position = -1;
-    this.value = -1;
-    this.next_move = -1;
+    this.card = -1;
+    this.next_move = 0;
   }
 
+  //this.next_move < player.stopValue-1 || this.card.value < player1.stopValue
   simpleMove(player) {
+    this.card = deck[this.position+1];
+    console.log('card before while loop');
+    console.log(this.card);
+
     while(this.next_move < player.stopValue-1) {
       this.next_move += 1;
       this.position += 1;
-      this.value = deck[this.position];
-      console.log(this.position, this.value);
+      console.log(this.position);
+      this.card = deck[this.position];
     }
   }
 }
@@ -207,7 +202,18 @@ console.log(dice1);console.log(dice2);
 var player1 = new Player();
 player1.rollDice();
 console.log(player1);
-var marker1 = new Marker();
+const markers = [];
+function initializeMarkers() {
+  console.log('In initialize markers function');
+  for(let i = 0; i < 3; i++) {
+    markers[i] = new Marker();
+    markers[i].simpleMove(player1);
+  }
+}
+
+initializeMarkers();
+console.log(markers);
+/*var marker1 = new Marker();
 marker1.simpleMove(player1);
 console.log(marker1);
 var marker2 = new Marker();
@@ -215,7 +221,7 @@ marker2.simpleMove(player1);
 console.log(marker2);
 var marker3 = new Marker();
 marker3.simpleMove(player1);
-console.log(marker3);
+console.log(marker3);*/
 //console.log(player1.blackDiceRoll+player1.redDiceRoll);
 
 //constants for minimum and maximum values of Card, invalid edge cards and minimum roll of Dice
