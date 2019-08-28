@@ -54,7 +54,7 @@ function highLowv2(current_card, guess) {
     return (guess === 'high') ?  'lose' :  'win';
   }
   else {
-    return (guess === 'high') ? 'win' : 'l  ose';
+    return (guess === 'high') ? 'win' : 'lose';
   }
 }
 
