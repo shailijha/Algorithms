@@ -180,7 +180,7 @@ class Marker
     console.log('card before while loop');
     console.log(this.card);
 
-    while(this.next_move < player.stopValue-1) {
+    while(this.card.value < player1.stopValue) {
       this.next_move += 1;
       this.position += 1;
       console.log(this.position);
