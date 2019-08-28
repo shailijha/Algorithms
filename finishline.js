@@ -179,22 +179,35 @@ class Marker
     this.card = deck[this.position+1];
     //console.log('card before while loop');
     //console.log(this.card);
-
-    while(this.next_move < player.stopValue && this.card.value < player1.stopValue) {
-      this.next_move += 1;
+    if(this.card.value < deck[0]) {
       this.position += 1;
-      //console.log(this.position);
-      this.card = deck[this.position];
+      this.next_move += 1;
+    }
+    else {
+      while(this.next_move < player.stopValue && this.card.value < player1.stopValue) {
+        this.next_move += 1;
+        this.position += 1;
+        //console.log(this.position);
+        this.card = deck[this.position];
+      }
     }
   }
 }
 
 /** look into swapping functionality. Not working properly. Maybe do the 3-50 card swap or
 Joe's method***/
+const maxCard = 53;
+const invalidCards = [0,1,2,11,12,13];
 
 var deck = new Array();
 Deck.createDeck();
+Deck.shuffle(deck);
+console.log('shuffle deck');
 console.log(deck);
+Deck.checkDeck();
+console.log('check deck');
+console.log(deck);
+
 var dice1 = new Dice(6,'black');
 var dice2 = new Dice(6,'red');
 console.log(dice1);console.log(dice2);
@@ -213,32 +226,5 @@ function initializeMarkers() {
 
 initializeMarkers();
 console.log(markers);
-/*var marker1 = new Marker();
-marker1.simpleMove(player1);
-console.log(marker1);
-var marker2 = new Marker();
-marker2.simpleMove(player1);
-console.log(marker2);
-var marker3 = new Marker();
-marker3.simpleMove(player1);
-console.log(marker3);*/
-//console.log(player1.blackDiceRoll+player1.redDiceRoll);
 
 //constants for minimum and maximum values of Card, invalid edge cards and minimum roll of Dice
-const maxCard = 53;
-const invalidCards = [0,1,2,11,12,13];
-
-/*Deck.createDeck();
-console.log(deck);
-Deck.shuffle(deck);
-console.log('shuffle deck');
-console.log(deck);
-Deck.checkDeck();
-console.log('check deck');
-console.log(deck);
-console.log(Deck.finalCheckDeck());*/
-
-
-/*console.log(sixSidedDice);
-console.log(sixSidedDice.rollDice());
-console.log(sixSidedDice);*/
