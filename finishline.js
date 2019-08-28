@@ -177,13 +177,13 @@ class Marker
   //this.next_move < player.stopValue-1 || this.card.value < player1.stopValue
   simpleMove(player) {
     this.card = deck[this.position+1];
-    console.log('card before while loop');
-    console.log(this.card);
+    //console.log('card before while loop');
+    //console.log(this.card);
 
-    while(this.card.value < player1.stopValue) {
+    while(this.next_move < player.stopValue && this.card.value < player1.stopValue) {
       this.next_move += 1;
       this.position += 1;
-      console.log(this.position);
+      //console.log(this.position);
       this.card = deck[this.position];
     }
   }
