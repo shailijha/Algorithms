@@ -67,6 +67,9 @@ class Deck {
     return Math.floor(Math.random() * Math.floor(maxCard));
   }
 
+  /*swap checks to see if the card is invalid. If yes, then it generates a random index
+  until it satisfies two conditions: the new index lies b/w [3,50] and the new index card
+  value is not invalid*/
   static swap(card,index) {
     if(invalidCards.indexOf(card.value) > -1) {
       let randIdx = Deck.generateRandomCardIndex();
@@ -84,6 +87,7 @@ class Deck {
     }
   }
 
+  //checkEdgeCards as the name suggests checks the edge cards
   static checkEdgeCards(deck) {
     console.log(invalidCards);
     console.log(deck[0]);console.log(deck[1]);console.log(deck[2]);
@@ -151,9 +155,6 @@ class Marker
     }
   }
 }
-
-/** look into swapping functionality. Not working properly. Maybe do the 3-50 card swap or
-Joe's method***/
 
 var deck = new Array();
 Deck.createDeck();
