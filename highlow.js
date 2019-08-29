@@ -88,20 +88,20 @@ function highLowv4(current_card, guess) {
     suit: suits[randomNumber(0,3)],
     value: randomNumber(2,14)
   }
-  console.log('next_card in v4 ',next_card);
 
-  current_card = current_card.value;
-
-  if(face_cards.has(current_card)) {
-    current_card = face_cards.get(current_card);
+  if(face_cards.has(current_card.value)) {
+    current_card.value = face_cards.get(current_card.value);
   }
-  console.log(current_card);
+
+  console.log('current card in v4 ',current_card);
+  console.log('next_card in v4 ',next_card);
   console.log(`guess in v4 ${guess}`);
-  if(current_card == next_card.value) {
+
+  if(current_card.value == next_card.value) {
     return 'draw';
   }
 
-  if(current_card > next_card.value) {
+  if(current_card.value > next_card.value) {
     return (guess === 'high') ?  'lose' :  'win';
   }
   else {
@@ -205,10 +205,10 @@ let guess = 'low';
 
 //console.log(highLowv1(current_card_value,guess));
 //console.log(highLowv2(current_card_value,guess));
-console.log(highLowv3(current_card,guess));
-/*console.log('card', current_card);
+//console.log(highLowv3(current_card,guess));
+//console.log('card', current_card);
 console.log(highLowv4(current_card,guess));
-console.log('card', current_card);*/
+//console.log('card', current_card);*/
 //console.log(highLowv5(current_card,guess));
 //console.log('card', current_card);
 //highLowv6('low');
