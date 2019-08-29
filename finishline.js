@@ -184,12 +184,10 @@ function initializeMarkers() {
 initializeMarkers();
 
 var userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
-  Please provide which marker you want apply this value to `);
+Please provide which marker you want apply this value to `);
 var userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
-  Please provide which marker you want apply this value to `);
+Please provide which marker you want apply this value to `);
 
 markers[userMarker1-1].simpleMove(player1.blackDiceRoll);
 markers[userMarker2-1].simpleMove(player1.redDiceRoll);
 console.log(markers);
-
-//constants for minimum and maximum values of Card, invalid edge cards and minimum roll of Dice
