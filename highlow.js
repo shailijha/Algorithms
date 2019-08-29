@@ -62,17 +62,19 @@ function highLowv2(current_card, guess) {
 //Version 1.2
 function highLowv3(current_card, guess) {
   let next_card = randomNumber(2,14);
-  current_card = current_card.value;
-  if(face_cards.has(current_card)) {
-    current_card = face_cards.get(current_card);
+
+  if(face_cards.has(current_card.value)) {
+    current_card.value = face_cards.get(current_card.value);
   }
+
+  //current_card = current_card.value;
   console.log('current card in v3: ',current_card);
   console.log(`next_card and guess in v3 ${next_card} ${guess}`);
-  if(current_card === next_card) {
+  if(current_card.value == next_card) {
     return 'draw';
   }
 
-  if(current_card > next_card) {
+  if(current_card.value > next_card) {
     return (guess === 'high') ?  'lose' :  'win';
   }
   else {
@@ -95,7 +97,7 @@ function highLowv4(current_card, guess) {
   }
   console.log(current_card);
   console.log(`guess in v4 ${guess}`);
-  if(current_card === next_card.value) {
+  if(current_card == next_card.value) {
     return 'draw';
   }
 
@@ -199,7 +201,7 @@ const current_card = {
   suit: 'clubs',
   value: 'J'
 };
-let guess = 'high';
+let guess = 'low';
 
 //console.log(highLowv1(current_card_value,guess));
 //console.log(highLowv2(current_card_value,guess));
