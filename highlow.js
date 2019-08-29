@@ -8,14 +8,6 @@
 2.1 ask user for high or low and print result
 2.2 keep track of the number of the correct guesses
 */
-let next_card = 'J';
-const current_card_value = 5;
-const current_card = {
-  suit: 'clubs',
-  value: 'J'
-};
-let guess = 'low';
-
 function randomNumber(min, max) {
   return (Math.floor(Math.random() * (max - min + 1)) + min)
 }
@@ -25,12 +17,16 @@ const suits = ['clubs', 'spades', 'hearts', 'diamonds'];
 
 //Version 1.0
 function highLowv1(current_card, guess) {
-  //console.log(`current_card, next_card and guess in v1 ${current_card} ${next_card} ${guess}`);
+  console.log(`current_card, next_card and guess in v1 ${current_card} ${next_card} ${guess}`);
   if(face_cards.has(next_card)) {
     next_card = face_cards.get(next_card);
   }
 
-  if(current_card === next_card) {
+  if(face_cards.has(current_card)) {
+    current_card = face_cards.get(current_card);
+  }
+
+  if(current_card == next_card) {
     return 'draw';
   }
 
@@ -45,8 +41,13 @@ function highLowv1(current_card, guess) {
 //Version 1.1
 function highLowv2(current_card, guess) {
   let next_card = randomNumber(2,14);
-  //console.log(`current_card, next_card and guess in v2 ${current_card} ${next_card} ${guess}`);
-  if(current_card === next_card) {
+  console.log(`current_card, next_card and guess in v2 ${current_card} ${next_card} ${guess}`);
+
+  if(face_cards.has(current_card)) {
+    current_card = face_cards.get(current_card);
+  }
+
+  if(current_card == next_card) {
     return 'draw';
   }
 
@@ -192,12 +193,20 @@ function highLowv6(guess) {
 
 }
 
+let next_card = 'J';
+const current_card_value = 'K';
+const current_card = {
+  suit: 'clubs',
+  value: 'J'
+};
+let guess = 'high';
+
 //console.log(highLowv1(current_card_value,guess));
 //console.log(highLowv2(current_card_value,guess));
-/*console.log(highLowv3(current_card,guess));
-console.log('card', current_card);
+console.log(highLowv3(current_card,guess));
+/*console.log('card', current_card);
 console.log(highLowv4(current_card,guess));
 console.log('card', current_card);*/
-console.log(highLowv5(current_card,guess));
+//console.log(highLowv5(current_card,guess));
 //console.log('card', current_card);
 //highLowv6('low');
