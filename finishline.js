@@ -1,6 +1,13 @@
 //Create classes for dice and card.Deck class should have function for shuffling, creation and layout of the
 //cards
 const minDiceRoll = 1;
+const maxCard = 54;
+const invalidCards = [0,1,2,11,12,13];
+const invalidPositions = [0,1,2,51,52,53];
+var randomIndex = [];
+var newCards = [];
+var readlineSync = require('readline-sync');
+
 class Dice {
   //constructor to initialize the dice. Refactored from simpled&d
   constructor(value,color) {
@@ -12,19 +19,17 @@ class Dice {
   //function to roll an n-sided dice.  Refactored from simpled&d
   rollDice() {
     let max = this.sides+1;
-    //console.log(max);
     let random = Math.floor(Math.random() * Math.floor(max));
     random = (random === 0 ? 1: random);
-    //console.log(random);
     return this.diceRoll = random;
   }
 }
 
 class Deck {
-  //function to create the deck. Refactored from best hand algo
   /*constructor(max) {
 
   }*/
+  //function to create the deck. Refactored from best hand algo
   static createDeck() {
     deck.push({suit:-1, value: 0});
     deck.push({suit:-1, value: 0});
@@ -37,7 +42,7 @@ class Deck {
   }
 
   //function to shuffle the array. Refactored from best hand algo
-  static shuffle(array) {
+  static shuffleDeck(array) {
     var currentIndex = array.length,
       temporaryValue,
       randomIndex;
@@ -57,100 +62,48 @@ class Deck {
     return array;
   }
 
-  //function to check if card is valid
-  static checkInvalid(value) {
-    console.log('checking', value)
-    if(invalidCards.indexOf(value) > -1) {
-      return true;
-    }
-    return false;
-  }
-
-  /*function to check the validity of edge cards. Keeps generating random index to swap with until it
-  finds a card that is not of the same index or not one of the invalid cards*/
-  static checkValidity(card,index) {
-    console.log('checking card', card);
-    if(Deck.checkInvalid(card.value)) {
-      console.log('card was found as invalid')
-      let randIdx = Deck.generateRandomCardIndex();
-      while(randIdx == index) {
-        randIdx = Deck.generateRandomCardIndex();
-        while(Deck.checkInvalid(deck[randIdx].value)) {
-          randIdx = Deck.generateRandomCardIndex();
-        }
-      }
-      console.log(`values before swapping in ${index} card`);
-      console.log(deck[index],deck[randIdx]);
-      let temp = deck[randIdx];
-      deck[randIdx] = card;
-      deck[index] = temp;
-      console.log(`values after swapping in ${index} card`);
-      console.log(deck[index],deck[randIdx]);
-    } else {
-      console.log(card,` is a valid card`);
-    }
-  }
-
-  static finalCheckDeck() {
-    let firstCard = deck[0];
-    let secondCard = deck[1];
-    let thirdCard = deck[2];
-    let lastoneoneCard = deck[51];
-    let lastoneCard = deck[52];
-    let lastCard = deck[53];
-    console.log(firstCard);console.log(secondCard);console.log(thirdCard);
-    console.log(lastoneoneCard);console.log(lastoneCard);console.log(lastCard);
-    console.log(invalidCards.indexOf(firstCard));console.log(invalidCards.indexOf(secondCard));console.log(invalidCards.indexOf(thirdCard));
-    console.log(invalidCards.indexOf(lastoneoneCard));console.log(invalidCards.indexOf(lastoneCard));console.log(invalidCards.indexOf(lastCard));
-    if(invalidCards.indexOf(parseInt(firstCard.value)) > -1 && invalidCards.indexOf(parseInt(secondCard.value)) > -1 && invalidCards.indexOf(parseInt(thirdCard.value)) > -1) {
-      return true;
-    }
-    if(invalidCards.indexOf(parseInt(lastoneoneCard.value)) > -1 && invalidCards.indexOf(parseInt(lastoneCard.value)) > -1 && invalidCards.indexOf(parseInt(lastCard.value)) > -1) {
-      return true;
-    }
-    return false;
-  }
-
-  /*function to check the deck after swapping. Calls checkValidity for the edge cards until they
-  aren't [1,2,6,7]*/
-  static checkDeck() {
-    let firstCard = deck[0];
-    let secondCard = deck[1];
-    let thirdCard = deck[2];
-    let lastoneoneCard = deck[51];
-    let lastoneCard = deck[52];
-    let lastCard = deck[53];
-    console.log(firstCard);console.log(secondCard);console.log(thirdCard);
-    console.log(lastoneoneCard);console.log(lastoneCard);console.log(lastCard);
-    //console.log(Deck.checkInvalid(firstCard.value));console.log(Deck.checkInvalid(secondCard.value));
-    //console.log(Deck.checkInvalid(lastoneCard.value));console.log(Deck.checkInvalid(lastCard.value));
-     while(Deck.checkInvalid(firstCard.value) || Deck.checkInvalid(secondCard.value) || Deck.checkInvalid(thirdCard.value)) {
-      Deck.checkValidity(firstCard,0);
-      Deck.checkValidity(secondCard,1);
-      Deck.checkValidity(thirdCard,2);
-      firstCard = deck[0];
-      secondCard = deck[1];
-      thirdCard = deck[2];
-     }
-
-    while(Deck.checkInvalid(lastoneoneCard.value) || Deck.checkInvalid(lastoneCard.value) || Deck.checkInvalid(lastCard.value)) {
-      Deck.checkValidity(lastoneoneCard,51);
-      Deck.checkValidity(lastoneCard,52);
-      Deck.checkValidity(lastCard,53);
-      lastoneoneCard = deck[51];
-      lastoneCard = deck[52];
-      lastCard = deck[53];
-    }
-  }
-
-  //function to pick random card index
+  //function to generate random card index
   static generateRandomCardIndex() {
     return Math.floor(Math.random() * Math.floor(maxCard));
-    //return Math.floor(Math.random() * (+max - +min)) + +min;
+  }
+
+  static swap(card,index) {
+    if(invalidCards.indexOf(card.value) > -1) {
+      let randIdx = Deck.generateRandomCardIndex();
+      while(invalidPositions.indexOf(randIdx) > -1 || invalidCards.indexOf(deck[randIdx].value) > -1) {
+        randIdx = Deck.generateRandomCardIndex();
+      }
+      randomIndex.push(randIdx);
+      newCards.push(deck[randIdx]);
+      let temp = card;
+      deck[index] = deck[randIdx];
+      deck[randIdx] = temp;
+    }
+    else {
+      randomIndex.push(-1);
+    }
+  }
+
+  static checkEdgeCards(deck) {
+    console.log(invalidCards);
+    console.log(deck[0]);console.log(deck[1]);console.log(deck[2]);
+    console.log(deck[51]);console.log(deck[52]);console.log(deck[53]);
+
+    Deck.swap(deck[0], 0);
+    Deck.swap(deck[1], 1);
+    Deck.swap(deck[2], 2);
+    Deck.swap(deck[51], 51);
+    Deck.swap(deck[52], 52);
+    Deck.swap(deck[53], 53);
+
+    console.log(randomIndex);
+    console.log(newCards);
   }
 }
 
-
+/*Player class is used to initialize each player. It has attributes of black dice roll, red dice
+roll and stop value. rollDice function rolls the respective dice and stop value is the sum of
+red+black dice rolls.*/
 class Player
 {
   constructor() {
@@ -166,6 +119,10 @@ class Player
   }
 }
 
+/*Each player gets 3 markers. Each has a position that indicates the current position it is on, card
+which is the current card the marker is on and next move which is curr_posn+1.
+simpleMove is a function used to actually move the markers. The dice roll is the input. Based
+on its value, the marker moves either till it reaches the stop value or the number of paces.*/
 class Marker
 {
   constructor() {
@@ -174,17 +131,18 @@ class Marker
     this.next_move = 0;
   }
 
-  //this.next_move < player.stopValue-1 || this.card.value < player1.stopValue
-  simpleMove(player) {
-    this.card = deck[this.position+1];
+  simpleMove(diceRollValue) {
     //console.log('card before while loop');
     //console.log(this.card);
-    if(this.card.value < deck[0]) {
+    //console.log(diceRollValue <= deck[0].value);
+    if(diceRollValue <= deck[0].value) {
       this.position += 1;
       this.next_move += 1;
+      this.card = deck[this.position];
+      //console.log(this.position); console.log(this.next_move); console.log(this.card);
     }
     else {
-      while(this.next_move < player.stopValue && this.card.value < player1.stopValue) {
+      while(this.next_move < diceRollValue && this.card.value < diceRollValue) {
         this.next_move += 1;
         this.position += 1;
         //console.log(this.position);
@@ -196,16 +154,14 @@ class Marker
 
 /** look into swapping functionality. Not working properly. Maybe do the 3-50 card swap or
 Joe's method***/
-const maxCard = 53;
-const invalidCards = [0,1,2,11,12,13];
 
 var deck = new Array();
 Deck.createDeck();
-Deck.shuffle(deck);
+Deck.shuffleDeck(deck);
 console.log('shuffle deck');
 console.log(deck);
-Deck.checkDeck();
-console.log('check deck');
+Deck.checkEdgeCards(deck);
+console.log('Final valid deck');
 console.log(deck);
 
 var dice1 = new Dice(6,'black');
@@ -215,16 +171,24 @@ console.log(dice1);console.log(dice2);
 var player1 = new Player();
 player1.rollDice();
 console.log(player1);
+
 const markers = [];
+
 function initializeMarkers() {
-  console.log('In initialize markers function');
   for(let i = 0; i < 3; i++) {
     markers[i] = new Marker();
-    markers[i].simpleMove(player1);
   }
 }
 
 initializeMarkers();
+
+var userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
+  Please provide which marker you want apply this value to `);
+var userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
+  Please provide which marker you want apply this value to `);
+
+markers[userMarker1-1].simpleMove(player1.blackDiceRoll);
+markers[userMarker2-1].simpleMove(player1.redDiceRoll);
 console.log(markers);
 
 //constants for minimum and maximum values of Card, invalid edge cards and minimum roll of Dice
