@@ -194,6 +194,53 @@ function highLowv6(guess) {
   }
 }
 
+//Version 2.1 & V 2.2
+function highLowv7() {
+  let flag = true;
+  let correct_guesses = 0;
+  let current_card = {
+    suit: suits[randomNumber(0,3)],
+    value: randomNumber(2,14)
+  };
+  console.log('Your current card is ',current_card);
+
+  var readlineSync = require('readline-sync');
+  let guess = readlineSync.question('Enter guess ');
+
+  let next_card = generateNextCard(current_card);
+
+  console.log('next card in v2.0 ',next_card);
+  //console.log('guess is ',guess);
+
+  if(current_card.value == next_card.value) {
+    return "You drew";
+  }
+  else if(current_card.value < next_card.value && guess == "low" || current_card.value > next_card.value && guess == "high") {
+    return "You lost"
+  }
+  else {
+    while(flag) {
+      //console.log('guess is ',guess);
+      if(current_card.value < next_card.value && guess == "high"
+      || current_card.value > next_card.value && guess == "low"
+      || current_card.value == next_card.value) {
+        flag = true;
+        correct_guesses++;
+        guess = readlineSync.question('You win! Enter new guess ');
+      }
+      else {
+        flag = false;
+        console.log('The number of correct guesses you made are ',correct_guesses);
+        return "You lose";
+      }
+      current_card = next_card;
+      next_card = generateNextCard(current_card);
+      console.log('current_card = next_card ',current_card);
+      console.log('new next card ',next_card);
+    }
+  }
+}
+
 let next_card = 'J';
 const current_card_value = 'K';
 const current_card = {
@@ -210,4 +257,5 @@ let guess = 'high';
 //console.log('card', current_card);*/
 //console.log(highLowv5(current_card,guess));
 //console.log('card', current_card);
-console.log(highLowv6('high'));
+//console.log(highLowv6('high'));
+console.log(highLowv7());
