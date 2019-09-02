@@ -166,46 +166,59 @@ class Marker
   }
 }
 
-var deck = new Array();
-Deck.createDeck();
-Deck.shuffleDeck(deck);
-//console.log('shuffle deck');
-//console.log(deck);
-Deck.checkEdgeCards(deck);
-console.log('Final valid deck');
-console.log(deck);
-
-var dice1 = new Dice(6,'black');
-var dice2 = new Dice(6,'red');
-//console.log(dice1);console.log(dice2);
-
-var player1 = new Player();
-player1.rollDice();
-console.log(player1);
-
-const markers = [];
-
-function initializeMarkers() {
+function initializeMarkers(markers) {
   for(let i = 0; i < 3; i++) {
     markers[i] = new Marker();
   }
 }
 
-initializeMarkers();
 
-var userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
-Please provide which marker you want apply this value to `);
-markers[userMarker1-1].simpleMove(player1.blackDiceRoll);
-console.log('markers after first dice roll ',markers);
+var deck = new Array();
+var dice1 = new Dice(6,'black');
+var dice2 = new Dice(6,'red');
 
-var userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
-Please provide which marker you want apply this value to `);
-console.log(markers[userMarker2-1].stop_flag);
-if(markers[userMarker2-1].stop_flag) {
-  var chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again. Please choose other marker `);
-  markers[chooseAnotherMarker-1].simpleMove(player1.blackDiceRoll);
+function playGame() {
+  Deck.createDeck();
+  Deck.shuffleDeck(deck);
+  //console.log('shuffle deck');
+  //console.log(deck);
+  Deck.checkEdgeCards(deck);
+  console.log('Final valid deck');
+  console.log(deck);
+
+  var player1 = new Player();
+  player1.rollDice();
+  console.log(player1);
+
+  var player2 = new Player();
+  player2.rollDice();
+  console.log(player2);
+
+  let player1Markers = [];
+  initializeMarkers(player1Markers);
+
+  let player2Markers = [];
+  initializeMarkers(player2Markers);
+
+  console.log(player1Markers);
+  console.log(player2Markers);
+
+  /*var userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
+  Please provide which marker you want apply this value to `);
+  markers[userMarker1-1].simpleMove(player1.blackDiceRoll);
+  console.log('markers after first dice roll ',markers);
+
+  var userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
+  Please provide which marker you want apply this value to `);
+  console.log(markers[userMarker2-1].stop_flag);
+  if(markers[userMarker2-1].stop_flag) {
+    var chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again. Please choose other marker `);
+    markers[chooseAnotherMarker-1].simpleMove(player1.blackDiceRoll);
+  }
+  else  {
+      markers[userMarker2-1].simpleMove(player1.redDiceRoll);
+  }
+  console.log('markers after second dice roll ',markers);*/
 }
-else  {
-    markers[userMarker2-1].simpleMove(player1.redDiceRoll);
-}
-console.log('markers after second dice roll ',markers);
+
+playGame();
