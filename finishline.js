@@ -89,9 +89,9 @@ class Deck {
 
   //checkEdgeCards as the name suggests checks the edge cards
   static checkEdgeCards(deck) {
-    console.log(invalidCards);
-    console.log(deck[0]);console.log(deck[1]);console.log(deck[2]);
-    console.log(deck[51]);console.log(deck[52]);console.log(deck[53]);
+    //console.log(invalidCards);
+    //console.log(deck[0]);console.log(deck[1]);console.log(deck[2]);
+    //console.log(deck[51]);console.log(deck[52]);console.log(deck[53]);
 
     Deck.swap(deck[0], 0);
     Deck.swap(deck[1], 1);
@@ -100,8 +100,8 @@ class Deck {
     Deck.swap(deck[52], 52);
     Deck.swap(deck[53], 53);
 
-    console.log(randomIndex);
-    console.log(newCards);
+    //console.log(randomIndex);
+    //console.log(newCards);
   }
 }
 
@@ -133,6 +133,7 @@ class Marker
     this.position = -1;
     this.card = -1;
     this.next_move = 0;
+    this.stop_flag = false;
   }
 
   simpleMove(diceRollValue) {
@@ -143,10 +144,19 @@ class Marker
       this.position += 1;
       this.next_move += 1;
       this.card = deck[this.position];
+      this.stop_flag = true;
       //console.log(this.position); console.log(this.next_move); console.log(this.card);
     }
     else {
+      //console.log('next move ',this.next_move);
+      //console.log('card\'s value ',this.card.value);
+      this.card = deck[0];
+      //console.log(this.next_move < diceRollValue);
+      //console.log(this.card.value <= diceRollValue);
       while(this.next_move < diceRollValue && this.card.value < diceRollValue) {
+        if(this.card.value >= diceRollValue) {
+          this.stop_flag = true;
+        }
         this.next_move += 1;
         this.position += 1;
         //console.log(this.position);
@@ -159,15 +169,15 @@ class Marker
 var deck = new Array();
 Deck.createDeck();
 Deck.shuffleDeck(deck);
-console.log('shuffle deck');
-console.log(deck);
+//console.log('shuffle deck');
+//console.log(deck);
 Deck.checkEdgeCards(deck);
 console.log('Final valid deck');
 console.log(deck);
 
 var dice1 = new Dice(6,'black');
 var dice2 = new Dice(6,'red');
-console.log(dice1);console.log(dice2);
+//console.log(dice1);console.log(dice2);
 
 var player1 = new Player();
 player1.rollDice();
@@ -185,9 +195,17 @@ initializeMarkers();
 
 var userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
 Please provide which marker you want apply this value to `);
+markers[userMarker1-1].simpleMove(player1.blackDiceRoll);
+console.log('markers after first dice roll ',markers);
+
 var userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
 Please provide which marker you want apply this value to `);
-
-markers[userMarker1-1].simpleMove(player1.blackDiceRoll);
-markers[userMarker2-1].simpleMove(player1.redDiceRoll);
-console.log(markers);
+console.log(markers[userMarker2-1].stop_flag);
+if(markers[userMarker2-1].stop_flag) {
+  var chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again. Please choose other marker `);
+  markers[chooseAnotherMarker-1].simpleMove(player1.blackDiceRoll);
+}
+else  {
+    markers[userMarker2-1].simpleMove(player1.redDiceRoll);
+}
+console.log('markers after second dice roll ',markers);
