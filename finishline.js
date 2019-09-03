@@ -33,12 +33,13 @@ class Deck {
   static createDeck() {
     deck.push({suit:-1, value: 0});
     deck.push({suit:-1, value: 0});
-    for (let i = 0; i < 4; i++) {
+    let i = 0;
+    //for (let i = 0; i < 4; i++) {
       for (let j = 1; j <= 13; j++) {
         let obj = { suit: i, value: j };
         deck.push(obj);
       }
-    }
+    //}
   }
 
   //function to shuffle the array. Refactored from best hand algo
@@ -131,36 +132,34 @@ class Marker
 {
   constructor() {
     this.position = -1;
-    this.card = -1;
+    this.card = {suit: -1, value: -1};
     this.next_move = 0;
     this.stop_flag = false;
   }
 
-  simpleMove(diceRollValue) {
-    //console.log('card before while loop');
-    //console.log(this.card);
-    //console.log(diceRollValue <= deck[0].value);
-    if(diceRollValue <= deck[0].value) {
+  simpleMove(diceRollValue, stopValue) {
+    if(diceRollValue <= deck[0].value && this.position == -1 || diceRollValue <= deck[this.next_move].value) {
       this.position += 1;
       this.next_move += 1;
       this.card = deck[this.position];
       this.stop_flag = true;
       //console.log(this.position); console.log(this.next_move); console.log(this.card);
     }
-    else {
-      //console.log('next move ',this.next_move);
-      //console.log('card\'s value ',this.card.value);
-      this.card = deck[0];
-      //console.log(this.next_move < diceRollValue);
-      //console.log(this.card.value <= diceRollValue);
-      while(this.next_move < diceRollValue && this.card.value < diceRollValue) {
-        if(this.card.value >= diceRollValue) {
-          this.stop_flag = true;
-        }
+    else if(diceRollValue > deck[this.next_move].value){
+      let paces = 0;
+      while(paces < diceRollValue && this.card.value < stopValue) {
         this.next_move += 1;
         this.position += 1;
-        //console.log(this.position);
         this.card = deck[this.position];
+        paces++;
+        // console.log('current markers position ',this.position);
+        // console.log('current markers next_move ',this.next_move);
+        // console.log('current markers card ',this.card);
+        // console.log('paces '+paces);
+      }
+
+      if(this.card.value == stopValue) {
+        this.stop_flag = true;
       }
     }
   }
@@ -179,46 +178,52 @@ var dice2 = new Dice(6,'red');
 
 function playGame() {
   Deck.createDeck();
-  Deck.shuffleDeck(deck);
+  //Deck.shuffleDeck(deck);
   //console.log('shuffle deck');
   //console.log(deck);
-  Deck.checkEdgeCards(deck);
+  //Deck.checkEdgeCards(deck);
   console.log('Final valid deck');
   console.log(deck);
 
   var player1 = new Player();
-  player1.rollDice();
-  console.log(player1);
-
-  var player2 = new Player();
-  player2.rollDice();
-  console.log(player2);
+  // var player2 = new Player();
+  // player2.rollDice();
+  // console.log(player2);
 
   let player1Markers = [];
   initializeMarkers(player1Markers);
 
-  let player2Markers = [];
-  initializeMarkers(player2Markers);
+  // let player2Markers = [];
+  // initializeMarkers(player2Markers);
+  //console.log(player2Markers);
 
-  console.log(player1Markers);
-  console.log(player2Markers);
 
-  /*var userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
-  Please provide which marker you want apply this value to `);
-  markers[userMarker1-1].simpleMove(player1.blackDiceRoll);
-  console.log('markers after first dice roll ',markers);
+  while(player1Markers[0].next_move < 15 && player1Markers[1].next_move < 15 && player1Markers[2].next_move < 15) {
+    //console.log('Markers before ',player1Markers);
+    player1.rollDice();
+    console.log(player1);
 
-  var userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
-  Please provide which marker you want apply this value to `);
-  console.log(markers[userMarker2-1].stop_flag);
-  if(markers[userMarker2-1].stop_flag) {
-    var chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again. Please choose other marker `);
-    markers[chooseAnotherMarker-1].simpleMove(player1.blackDiceRoll);
+    let userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
+    Please provide which marker you want apply this value to `);
+
+    player1Markers[userMarker1-1].simpleMove(player1.blackDiceRoll, player1.stopValue);
+
+    let userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
+    Please provide which marker you want apply this value to `);
+
+    if(player1Markers[userMarker2-1].stop_flag) {
+      var chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again.
+        Please choose other marker `);
+      player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+    }
+    else  {
+        player1Markers[userMarker2-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+    }
+    console.log('Markers after ',player1Markers);
+    player1Markers[0].stop_flag = player1Markers[1].stop_flag = player1Markers[2].stop_flag = false;
   }
-  else  {
-      markers[userMarker2-1].simpleMove(player1.redDiceRoll);
-  }
-  console.log('markers after second dice roll ',markers);*/
+
+  //console.log('markers final ',player1Markers);
 }
 
 playGame();
