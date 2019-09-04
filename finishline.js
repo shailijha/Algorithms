@@ -6,6 +6,8 @@ const invalidCards = [0,1,2,11,12,13];
 const invalidPositions = [0,1,2,51,52,53];
 var randomIndex = [];
 var newCards = [];
+const suitsMap = new Map([[-1, '\u25A0'], [0,'\u2660'], [1,'\u2665'], [2, '\u2666'], [3,'\u2663']]);
+var mainstring = '';
 var readlineSync = require('readline-sync');
 
 class Dice {
@@ -95,6 +97,30 @@ class Deck {
     Deck.swap(deck[52], 52);
     Deck.swap(deck[53], 53);
   }
+
+  static displayBoard() {
+    let j = 0;
+    for(let i = 0; i < deck.length; i++) {
+      //console.log('j',j);
+      if(i % 7 == 0) {
+        mainstring += '\n';
+      }
+      let card_str = suitsMap.get(deck[i].suit)+' '+deck[i].value+'\t';
+      mainstring += card_str;
+      //let marker_str = '\n'+deck[i].markers;
+      //mainstring += marker_str;
+      //console.log(mainstring);
+    }
+    for(let i = 0; i < deck.length; i++) {
+      if(i % 7 == 0) {
+        mainstring += '\n';
+      }
+      let marker_str = deck[i].markers+'\t';
+      mainstring += marker_str;
+    }
+    console.log(mainstring);
+    mainstring = '';
+  }
 }
 
 /*Player class is used to initialize each player. It has attributes of black dice roll, red dice
@@ -126,7 +152,6 @@ class Marker
     this.name = name;
     this.position = -1;
     this.card = {suit: -1, value: -1};
-    //this.position+1 = 0;
     this.stop_flag = false;
     this.reached = false;
   }
@@ -134,16 +159,12 @@ class Marker
   simpleMove(diceRollValue, stopValue) {
     if((stopValue <= deck[0].value && this.position == -1) || stopValue <= deck[this.position+1].value) {
       this.position += 1;
-      //this.position+1 += 1;
       this.card = deck[this.position];
       this.stop_flag = true;
-      //console.log(this.position); console.log(this.position+1); console.log(this.card);
     }
     else {
       let paces = 0;
       while(paces < diceRollValue && this.position < (deck.length - 1) && this.card.value < stopValue) {
-
-        //this.position+1 += 1;
         this.position += 1;
         this.card = deck[this.position];
         paces++;
@@ -182,8 +203,9 @@ function playGame() {
   // console.log('shuffle deck');
   // console.log(deck);
   // Deck.checkEdgeCards();
-  console.log('Final valid deck');
-  console.log(deck);
+  console.log('Initial deck');
+  Deck.displayBoard();
+  //console.log(deck);
 
   var player1 = new Player();
   var player2 = new Player();
@@ -200,10 +222,9 @@ function playGame() {
 
 
   while(player1Markers[0].position < deck.length-1 || player1Markers[1].position < deck.length-1 || player1Markers[2].position < deck.length-1) {
-    // if(player1Markers[0].position == deck.length && player1Markers[1].position == deck.length && player1Markers[2].position == deck.length) {
-    //   break;
-    // }
-    //console.log('Markers before ',player1Markers);
+  //   // if(player1Markers[0].position == deck.length && player1Markers[1].position == deck.length && player1Markers[2].position == deck.length) {
+  //   //   break;
+  //   // }
     player1.rollDice();
     console.log(player1);
 
@@ -213,48 +234,45 @@ function playGame() {
     if(player1Markers[userMarker1-1].reached) {
       let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
       player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
-    } else {
-        player1Markers[userMarker1-1].simpleMove(player1.blackDiceRoll, player1.stopValue);
-    }
-    if(player1Markers[0].reached && player1Markers[1].reached && player1Markers[2].reached) {
-      console.log('Game over');
-    }
-    else {
-      let userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
-      Please provide which marker you want apply this value to `);
+     } else {
+         player1Markers[userMarker1-1].simpleMove(player1.blackDiceRoll, player1.stopValue);
+     }
+     if(player1Markers[0].reached && player1Markers[1].reached && player1Markers[2].reached) {
+       console.log('Game over');
+     }
+     else {
+       let userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
+       Please provide which marker you want apply this value to `);
 
-      if(player1Markers[userMarker2-1].stop_flag) {
-        let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again.
-          Please choose other marker `);
-        player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
-      } else if(player1Markers[userMarker2-1].reached) {
-        let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
-        player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
-      }
-      else  {
-          player1Markers[userMarker2-1].simpleMove(player1.redDiceRoll, player1.stopValue);
-      }
-    }
+       if(player1Markers[userMarker2-1].stop_flag) {
+         let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again.
+           Please choose other marker `);
+         player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+       } else if(player1Markers[userMarker2-1].reached) {
+         let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
+         player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+       }
+       else  {
+           player1Markers[userMarker2-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+       }
+     }
 
     player1Markers.forEach((marker) => {
-      //console.log('current marker ',marker);
-      //console.log('card value ',marker.card.value);
       if(marker.card.value > -1) {
-        // let index = deck.findIndex(c => c.value === marker.card.value);
         let index = marker.position;
-        //console.log('index ',index);
         deck[index].markers += marker.name;
       }
     })
-    console.log('Markers after ',player1Markers);
-    console.log('Deck after ',deck);
+    //console.log('Markers after ',player1Markers);
+    //console.log('Deck after ',deck);
+    Deck.displayBoard();
     deck.forEach(card => {
       card.markers = '';
     })
     player1Markers[0].stop_flag = player1Markers[1].stop_flag = player1Markers[2].stop_flag = false;
   }
 
-  console.log('markers final ',player1Markers);
+  //console.log('markers final ',player1Markers);
 }
 
 playGame();
