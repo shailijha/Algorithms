@@ -146,6 +146,7 @@ which is the current card the marker is on, next move which is curr_posn+1, stop
 was stopped by the stop value and reached flag to keep track of it has reached the end of the board.
 simpleMove is a function used to actually move the markers. The dice roll and stop value are the inputs. Based
 on stop value, the marker moves either till it reaches the stop value or the number of paces.*/
+const mapMarkerToIndex = new Map([['A',0], ['B',1], ['C',2]]);
 class Marker
 {
   constructor(name) {
@@ -231,11 +232,11 @@ function playGame() {
     let userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
     Please provide which marker you want apply this value to `);
 
-    if(player1Markers[userMarker1-1].reached) {
+    if(player1Markers[mapMarkerToIndex.get(userMarker1)].reached) {
       let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
-      player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+      player1Markers[mapMarkerToIndex.get(chooseAnotherMarker)].simpleMove(player1.redDiceRoll, player1.stopValue);
      } else {
-         player1Markers[userMarker1-1].simpleMove(player1.blackDiceRoll, player1.stopValue);
+         player1Markers[mapMarkerToIndex.get(userMarker1)].simpleMove(player1.blackDiceRoll, player1.stopValue);
      }
      if(player1Markers[0].reached && player1Markers[1].reached && player1Markers[2].reached) {
        console.log('Game over');
@@ -244,16 +245,16 @@ function playGame() {
        let userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
        Please provide which marker you want apply this value to `);
 
-       if(player1Markers[userMarker2-1].stop_flag) {
+       if(player1Markers[mapMarkerToIndex.get(userMarker2)].stop_flag) {
          let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again.
            Please choose other marker `);
-         player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
-       } else if(player1Markers[userMarker2-1].reached) {
+         player1Markers[mapMarkerToIndex.get(chooseAnotherMarker)].simpleMove(player1.redDiceRoll, player1.stopValue);
+       } else if(player1Markers[mapMarkerToIndex.get(userMarker2)].reached) {
          let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
-         player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+         player1Markers[mapMarkerToIndex.get(chooseAnotherMarker)].simpleMove(player1.redDiceRoll, player1.stopValue);
        }
        else  {
-           player1Markers[userMarker2-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+           player1Markers[mapMarkerToIndex.get(userMarker2)].simpleMove(player1.redDiceRoll, player1.stopValue);
        }
      }
 
