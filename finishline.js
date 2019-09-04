@@ -123,7 +123,8 @@ simpleMove is a function used to actually move the markers. The dice roll is the
 on its value, the marker moves either till it reaches the stop value or the number of paces.*/
 class Marker
 {
-  constructor() {
+  constructor(name) {
+    this.name = name;
     this.position = -1;
     this.card = {suit: -1, value: -1};
     this.next_move = 0;
@@ -147,16 +148,16 @@ class Marker
         this.position += 1;
         this.card = deck[this.position];
         paces++;
-         console.log('current markers position ',this.position);
-         console.log('current markers next_move ',this.next_move);
-         console.log('current markers card ',this.card);
-         console.log('paces '+paces);
+         // console.log('current markers position ',this.position);
+         // console.log('current markers next_move ',this.next_move);
+         // console.log('current markers card ',this.card);
+         // console.log('paces '+paces);
       }
 
       if(this.position < deck.length && this.card.value == stopValue) {
         this.stop_flag = true;
       }
-      console.log('Markers in simpleMove function ',player1Markers);
+      //console.log('Markers in simpleMove function ',player1Markers);
     }
     if(this.position == deck.length - 1) {
       this.reached = true;
@@ -164,9 +165,10 @@ class Marker
   }
 }
 
+const markerNames = ['A', 'B', 'C'];
 function initializeMarkers(markers) {
   for(let i = 0; i < 3; i++) {
-    markers[i] = new Marker();
+    markers[i] = new Marker(markerNames[i]);
   }
 }
 
@@ -188,6 +190,10 @@ function playGame() {
   var player2 = new Player();
   //player2.rollDice();
   //console.log(player2);
+
+  let player1Markers = [];
+  initializeMarkers(player1Markers);
+  console.log(player1Markers);
 
   let player2Markers = [];
   initializeMarkers(player2Markers);
@@ -232,8 +238,5 @@ function playGame() {
 
   console.log('markers final ',player1Markers);
 }
-
-var player1Markers = [];
-initializeMarkers(player1Markers);
 
 playGame();
