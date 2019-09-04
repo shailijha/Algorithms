@@ -35,7 +35,7 @@ class Deck {
     deck.push({suit:-1, value: 0, markers:''});
     let i = 0;
     //for (let i = 0; i < 4; i++) {
-      for (let j = 1; j <= 13; j++) {
+      for (let j = 1; j <= 5; j++) {
         let obj = { suit: i, value: j, markers:'' };
         deck.push(obj);
       }
@@ -116,38 +116,39 @@ class Player
 }
 
 /*Each player gets 3 markers. Each has a position that indicates the current position it is on, card
-which is the current card the marker is on and next move which is curr_posn+1.
-simpleMove is a function used to actually move the markers. The dice roll is the input. Based
-on its value, the marker moves either till it reaches the stop value or the number of paces.*/
+which is the current card the marker is on, next move which is curr_posn+1, stop flag to indicate if the marker
+was stopped by the stop value and reached flag to keep track of it has reached the end of the board.
+simpleMove is a function used to actually move the markers. The dice roll and stop value are the inputs. Based
+on stop value, the marker moves either till it reaches the stop value or the number of paces.*/
 class Marker
 {
   constructor(name) {
     this.name = name;
     this.position = -1;
     this.card = {suit: -1, value: -1};
-    this.next_move = 0;
+    //this.position+1 = 0;
     this.stop_flag = false;
     this.reached = false;
   }
 
   simpleMove(diceRollValue, stopValue) {
-    if((stopValue <= deck[0].value && this.position == -1) || stopValue <= deck[this.next_move].value) {
+    if((stopValue <= deck[0].value && this.position == -1) || stopValue <= deck[this.position+1].value) {
       this.position += 1;
-      this.next_move += 1;
+      //this.position+1 += 1;
       this.card = deck[this.position];
       this.stop_flag = true;
-      //console.log(this.position); console.log(this.next_move); console.log(this.card);
+      //console.log(this.position); console.log(this.position+1); console.log(this.card);
     }
     else {
       let paces = 0;
       while(paces < diceRollValue && this.position < (deck.length - 1) && this.card.value < stopValue) {
 
-        this.next_move += 1;
+        //this.position+1 += 1;
         this.position += 1;
         this.card = deck[this.position];
         paces++;
          // console.log('current markers position ',this.position);
-         // console.log('current markers next_move ',this.next_move);
+         // console.log('current markers position+1 ',this.position+1);
          // console.log('current markers card ',this.card);
          // console.log('paces '+paces);
       }
@@ -198,10 +199,10 @@ function playGame() {
   //console.log(player2Markers);
 
 
-  while(player1Markers[0].next_move < 15 || player1Markers[1].next_move < 15 || player1Markers[2].next_move < 15) {
-    if(player1Markers[0].next_move == 15 && player1Markers[1].next_move == 15 && player1Markers[2].next_move == 15) {
-      break;
-    }
+  while(player1Markers[0].position < deck.length-1 || player1Markers[1].position < deck.length-1 || player1Markers[2].position < deck.length-1) {
+    // if(player1Markers[0].position == deck.length && player1Markers[1].position == deck.length && player1Markers[2].position == deck.length) {
+    //   break;
+    // }
     //console.log('Markers before ',player1Markers);
     player1.rollDice();
     console.log(player1);
