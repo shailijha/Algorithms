@@ -35,7 +35,7 @@ class Deck {
     deck.push({suit:-1, value: 0, markers:''});
     let i = 0;
     //for (let i = 0; i < 4; i++) {
-      for (let j = 1; j <= 5; j++) {
+      for (let j = 1; j <= 13; j++) {
         let obj = { suit: i, value: j, markers:'' };
         deck.push(obj);
       }
@@ -43,8 +43,8 @@ class Deck {
   }
 
   //function to shuffle the array. Refactored from best hand algo
-  static shuffleDeck(array) {
-    var currentIndex = array.length,
+  static shuffleDeck() {
+    var currentIndex = deck.length,
       temporaryValue,
       randomIndex;
 
@@ -55,12 +55,10 @@ class Deck {
       currentIndex -= 1;
 
       // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+      temporaryValue = deck[currentIndex];
+      deck[currentIndex] = deck[randomIndex];
+      deck[randomIndex] = temporaryValue;
     }
-
-    return array;
   }
 
   //function to generate random card index
@@ -89,7 +87,7 @@ class Deck {
   }
 
   //checkEdgeCards as the name suggests checks the edge cards
-  static checkEdgeCards(deck) {
+  static checkEdgeCards() {
     Deck.swap(deck[0], 0);
     Deck.swap(deck[1], 1);
     Deck.swap(deck[2], 2);
@@ -133,15 +131,14 @@ class Marker
   }
 
   simpleMove(diceRollValue, stopValue) {
-    if(diceRollValue <= deck[0].value && this.position == -1 || diceRollValue <= deck[this.next_move].value) {
+    if((stopValue <= deck[0].value && this.position == -1) || stopValue <= deck[this.next_move].value) {
       this.position += 1;
       this.next_move += 1;
       this.card = deck[this.position];
       this.stop_flag = true;
-      //deck[this.position].markers.push(this.name);
       //console.log(this.position); console.log(this.next_move); console.log(this.card);
     }
-    else if(diceRollValue > deck[this.next_move].value) {
+    else {
       let paces = 0;
       while(paces < diceRollValue && this.position < (deck.length - 1) && this.card.value < stopValue) {
 
@@ -155,10 +152,9 @@ class Marker
          // console.log('paces '+paces);
       }
 
-      if(this.position < deck.length && this.card.value == stopValue) {
+      if(this.card.value == stopValue) {
         this.stop_flag = true;
       }
-      //deck[this.position].markers.push(this.name);
       //console.log('Markers in simpleMove function ',player1Markers);
     }
     if(this.position == deck.length - 1) {
@@ -181,10 +177,10 @@ var dice2 = new Dice(6,'red');
 
 function playGame() {
   Deck.createDeck();
-  //Deck.shuffleDeck(deck);
-  //console.log('shuffle deck');
-  //console.log(deck);
-  //Deck.checkEdgeCards(deck);
+  // Deck.shuffleDeck();
+  // console.log('shuffle deck');
+  // console.log(deck);
+  // Deck.checkEdgeCards();
   console.log('Final valid deck');
   console.log(deck);
 
@@ -202,8 +198,8 @@ function playGame() {
   //console.log(player2Markers);
 
 
-  while(player1Markers[0].next_move < 7 || player1Markers[1].next_move < 7 || player1Markers[2].next_move < 7) {
-    if(player1Markers[0].next_move == 7 && player1Markers[1].next_move == 7 && player1Markers[2].next_move == 7) {
+  while(player1Markers[0].next_move < 15 || player1Markers[1].next_move < 15 || player1Markers[2].next_move < 15) {
+    if(player1Markers[0].next_move == 15 && player1Markers[1].next_move == 15 && player1Markers[2].next_move == 15) {
       break;
     }
     //console.log('Markers before ',player1Markers);
@@ -225,7 +221,7 @@ function playGame() {
     else {
       let userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
       Please provide which marker you want apply this value to `);
-      
+
       if(player1Markers[userMarker2-1].stop_flag) {
         let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again.
           Please choose other marker `);
