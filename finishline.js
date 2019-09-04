@@ -31,12 +31,12 @@ class Deck {
   }*/
   //function to create the deck. Refactored from best hand algo
   static createDeck() {
-    deck.push({suit:-1, value: 0});
-    deck.push({suit:-1, value: 0});
+    deck.push({suit:-1, value: 0, markers:''});
+    deck.push({suit:-1, value: 0, markers:''});
     let i = 0;
     //for (let i = 0; i < 4; i++) {
       for (let j = 1; j <= 5; j++) {
-        let obj = { suit: i, value: j };
+        let obj = { suit: i, value: j, markers:'' };
         deck.push(obj);
       }
     //}
@@ -138,6 +138,7 @@ class Marker
       this.next_move += 1;
       this.card = deck[this.position];
       this.stop_flag = true;
+      //deck[this.position].markers.push(this.name);
       //console.log(this.position); console.log(this.next_move); console.log(this.card);
     }
     else if(diceRollValue > deck[this.next_move].value) {
@@ -157,6 +158,7 @@ class Marker
       if(this.position < deck.length && this.card.value == stopValue) {
         this.stop_flag = true;
       }
+      //deck[this.position].markers.push(this.name);
       //console.log('Markers in simpleMove function ',player1Markers);
     }
     if(this.position == deck.length - 1) {
@@ -193,7 +195,7 @@ function playGame() {
 
   let player1Markers = [];
   initializeMarkers(player1Markers);
-  console.log(player1Markers);
+  //console.log(player1Markers);
 
   let player2Markers = [];
   initializeMarkers(player2Markers);
@@ -217,22 +219,41 @@ function playGame() {
     } else {
         player1Markers[userMarker1-1].simpleMove(player1.blackDiceRoll, player1.stopValue);
     }
-
-    let userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
-    Please provide which marker you want apply this value to `);
-
-    if(player1Markers[userMarker2-1].stop_flag) {
-      let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again.
-        Please choose other marker `);
-      player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
-    } else if(player1Markers[userMarker2-1].reached) {
-      let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
-      player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+    if(player1Markers[0].reached && player1Markers[1].reached && player1Markers[2].reached) {
+      console.log('Game over');
     }
-    else  {
-        player1Markers[userMarker2-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+    else {
+      let userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
+      Please provide which marker you want apply this value to `);
+      
+      if(player1Markers[userMarker2-1].stop_flag) {
+        let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again.
+          Please choose other marker `);
+        player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+      } else if(player1Markers[userMarker2-1].reached) {
+        let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
+        player1Markers[chooseAnotherMarker-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+      }
+      else  {
+          player1Markers[userMarker2-1].simpleMove(player1.redDiceRoll, player1.stopValue);
+      }
     }
+
+    player1Markers.forEach((marker) => {
+      //console.log('current marker ',marker);
+      //console.log('card value ',marker.card.value);
+      if(marker.card.value > -1) {
+        // let index = deck.findIndex(c => c.value === marker.card.value);
+        let index = marker.position;
+        //console.log('index ',index);
+        deck[index].markers += marker.name;
+      }
+    })
     console.log('Markers after ',player1Markers);
+    console.log('Deck after ',deck);
+    deck.forEach(card => {
+      card.markers = '';
+    })
     player1Markers[0].stop_flag = player1Markers[1].stop_flag = player1Markers[2].stop_flag = false;
   }
 
