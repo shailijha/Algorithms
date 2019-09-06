@@ -1,9 +1,9 @@
 //Create classes for dice and card.Deck class should have function for shuffling, creation and layout of the
 //cards
 const minDiceRoll = 1;
-const maxCard = 54;
+const maxCard = 15;
 const invalidCards = [0,1,2,11,12,13];
-const invalidPositions = [0,1,2,51,52,53];
+const invalidPositions = [0,1,2,12,13,14];
 var randomIndex = [];
 var newCards = [];
 const suitsMap = new Map([[-1, '\u25A0'], [0,'\u2660'], [1,'\u2665'], [2, '\u2666'], [3,'\u2663']]);
@@ -33,12 +33,12 @@ class Deck {
   }*/
   //function to create the deck. Refactored from best hand algo
   static createDeck() {
-    deck.push({suit:-1, value: 0, markers:''});
-    deck.push({suit:-1, value: 0, markers:''});
+    deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
+    deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
     let i = 0;
     //for (let i = 0; i < 4; i++) {
-      for (let j = 1; j <= 5; j++) {
-        let obj = { suit: i, value: j, markers:'' };
+      for (let j = 1; j <= 13; j++) {
+        let obj = { suit: i, value: j, player1markers:'', player2markers:'' };
         deck.push(obj);
       }
     //}
@@ -93,30 +93,60 @@ class Deck {
     Deck.swap(deck[0], 0);
     Deck.swap(deck[1], 1);
     Deck.swap(deck[2], 2);
-    Deck.swap(deck[51], 51);
-    Deck.swap(deck[52], 52);
-    Deck.swap(deck[53], 53);
+    Deck.swap(deck[deck.length-3], deck.length-3);
+    Deck.swap(deck[deck.length-2], deck.length-2);
+    Deck.swap(deck[deck.length-1], deck.length-1);
   }
 
   static displayBoard() {
+    let i = 0;
     let j = 0;
-    for(let i = 0; i < deck.length; i++) {
-      //console.log('j',j);
-      if(i % 7 == 0) {
+    let k = 0;
+
+    while(i < deck.length) {
+      if(i % 7 == 0 && i > 0) {
+        mainstring += '\n';
+        let marker_str = '';
+        while(j < i) {
+            marker_str = deck[j].player1markers+'\t';
+            mainstring += marker_str;
+            j += 1;
+        }
+        if(j % 7 == 0) {
+          mainstring += '\n';
+          let marker_str1 = '';
+          while(k < j) {
+              marker_str1 = deck[k].player2markers+'\t';
+              mainstring += marker_str1;
+              k += 1;
+          }
+          mainstring += '\n';
+        }
         mainstring += '\n';
       }
-      let card_str = suitsMap.get(deck[i].suit)+' '+deck[i].value+'\t';
-      mainstring += card_str;
-      //let marker_str = '\n'+deck[i].markers;
-      //mainstring += marker_str;
-      //console.log(mainstring);
+      if(i < deck.length) {
+        let card_str = suitsMap.get(deck[i].suit)+' '+deck[i].value+'\t';
+        mainstring += card_str;
+        i += 1;
+      }
     }
-    for(let i = 0; i < deck.length; i++) {
-      if(i % 7 == 0) {
-        mainstring += '\n';
+    if(i == deck.length) {
+      mainstring += '\n';
+      let marker_str = '';
+      let marker_str1 = '';
+      while(j < i) {
+          marker_str = deck[j].player1markers+'\t';
+          mainstring += marker_str;
+          j += 1;
       }
-      let marker_str = deck[i].markers+'\t';
-      mainstring += marker_str;
+
+      mainstring += '\n';
+
+      while(k < i) {
+          marker_str1 = deck[k].player2markers+'\t';
+          mainstring += marker_str1;
+          k += 1;
+      }
     }
     console.log(mainstring);
     mainstring = '';
@@ -158,24 +188,33 @@ class Marker
   }
 
   simpleMove(diceRollValue, stopValue) {
-    if((stopValue <= deck[0].value && this.position == -1) || stopValue <= deck[this.position+1].value) {
-      this.position += 1;
-      this.card = deck[this.position];
+    console.log('attempting to move', diceRollValue);
+
+    this.position += 1;
+    this.card = deck[this.position];
+
+    /*if((stopValue <= deck[0].value && this.position == -1) || stopValue <= deck[this.position+1].value) {
+      this.stop_flag = true;
+    }*/
+    if(stopValue <= this.card.value) {
+      console.log('found stop value');
       this.stop_flag = true;
     }
+
     else {
-      let paces = 0;
+      let paces = 1;
       while(paces < diceRollValue && this.position < (deck.length - 1) && this.card.value < stopValue) {
         this.position += 1;
         this.card = deck[this.position];
         paces++;
-         // console.log('current markers position ',this.position);
-         // console.log('current markers position+1 ',this.position+1);
-         // console.log('current markers card ',this.card);
-         // console.log('paces '+paces);
+        /*console.log('current markers position ',this.position);
+        //console.log('current markers position+1 ',this.position+1);
+        console.log('current markers card ',this.card);
+        console.log('paces '+paces);*/
       }
 
-      if(this.card.value == stopValue) {
+      if(this.card.value >= stopValue) {
+        console.log('found stop value');
         this.stop_flag = true;
       }
       //console.log('Markers in simpleMove function ',player1Markers);
@@ -198,82 +237,125 @@ var deck = new Array();
 var dice1 = new Dice(6,'black');
 var dice2 = new Dice(6,'red');
 
+function checkGameOver() {
+  if(player1Markers[0].reached && player1Markers[1].reached && player1Markers[2].reached)
+    return [true,'Player 1 won the game'];
+  else if(player2Markers[0].reached && player2Markers[1].reached && player2Markers[2].reached)
+    return [true,'Player 2 won the game'];
+  else
+    return false;
+}
+
+function playBlackDice(userMarker1,playerMarkers, player) {
+  if(playerMarkers[mapMarkerToIndex.get(userMarker1)].reached) {
+    let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
+    playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].simpleMove(player.blackDiceRoll, player.stopValue);
+  } else {
+       playerMarkers[mapMarkerToIndex.get(userMarker1)].simpleMove(player.blackDiceRoll, player.stopValue);
+   }
+}
+
+function playRedDice(userMarker2,playerMarkers, player) {
+  if(playerMarkers[mapMarkerToIndex.get(userMarker2)].stop_flag) {
+    let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. Please choose other marker `);
+    playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].simpleMove(player.redDiceRoll, player.stopValue);
+  } else if(playerMarkers[mapMarkerToIndex.get(userMarker2)].reached) {
+    let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
+    playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].simpleMove(player.redDiceRoll, player.stopValue);
+  }
+  else  {
+      playerMarkers[mapMarkerToIndex.get(userMarker2)].simpleMove(player.redDiceRoll, player.stopValue);
+  }
+}
+
+function recurseGame(playerMarkers, player) {
+  let userMarker1 = readlineSync.question(`Please provide which marker you want apply black dice roll to `);
+  playBlackDice(userMarker1.toUpperCase(),playerMarkers, player);
+
+  let gameOver = checkGameOver();
+
+  if(gameOver[0]) {
+    //console.log(gameOver[1]);
+    return gameOver;
+  }
+  else {
+    let userMarker2 = readlineSync.question(`Please provide which marker you want apply red dice roll to `);
+    playRedDice(userMarker2.toUpperCase(),playerMarkers, player);
+    return gameOver;
+  }
+
+  playerMarkers[0].stop_flag = playerMarkers[1].stop_flag = playerMarkers[2].stop_flag = false;
+}
+
+//function to play the game. Takes in the n players markers and actually plays the game using them.
 function playGame() {
-  Deck.createDeck();
-  // Deck.shuffleDeck();
-  // console.log('shuffle deck');
-  // console.log(deck);
-  // Deck.checkEdgeCards();
-  console.log('Initial deck');
-  Deck.displayBoard();
-  //console.log(deck);
-
-  var player1 = new Player();
-  var player2 = new Player();
-  //player2.rollDice();
-  //console.log(player2);
-
-  let player1Markers = [];
-  initializeMarkers(player1Markers);
-  //console.log(player1Markers);
-
-  let player2Markers = [];
-  initializeMarkers(player2Markers);
-  //console.log(player2Markers);
-
-
-  while(player1Markers[0].position < deck.length-1 || player1Markers[1].position < deck.length-1 || player1Markers[2].position < deck.length-1) {
-  //   // if(player1Markers[0].position == deck.length && player1Markers[1].position == deck.length && player1Markers[2].position == deck.length) {
-  //   //   break;
-  //   // }
+  while((player1Markers[0].position < deck.length-1 || player1Markers[1].position < deck.length-1 || player1Markers[2].position < deck.length-1)
+     && (player2Markers[0].position < deck.length-1 || player2Markers[1].position < deck.length-1 || player2Markers[2].position < deck.length-1)) {
     player1.rollDice();
-    console.log(player1);
+    console.log(`Player 1 => Black dice roll: ${player1.blackDiceRoll}, Red dice roll: ${player1.redDiceRoll}, Stop value: ${player1.stopValue}`)
+    let gameOverFlag = recurseGame(player1Markers,player1);
 
-    let userMarker1 = readlineSync.question(`Your black dice roll is ${player1.blackDiceRoll}.
-    Please provide which marker you want apply this value to `);
+    //let gameOver = checkGameOver();
 
-    if(player1Markers[mapMarkerToIndex.get(userMarker1)].reached) {
-      let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
-      player1Markers[mapMarkerToIndex.get(chooseAnotherMarker)].simpleMove(player1.redDiceRoll, player1.stopValue);
-     } else {
-         player1Markers[mapMarkerToIndex.get(userMarker1)].simpleMove(player1.blackDiceRoll, player1.stopValue);
-     }
-     if(player1Markers[0].reached && player1Markers[1].reached && player1Markers[2].reached) {
-       console.log('Game over');
-     }
-     else {
-       let userMarker2 = readlineSync.question(`Your red dice roll is ${player1.redDiceRoll}.
-       Please provide which marker you want apply this value to `);
+    if(gameOverFlag[0]) {
+      console.log(`Game over. ${gameOver[1]} won the game`);
+    }
+    else {
+      console.log();
 
-       if(player1Markers[mapMarkerToIndex.get(userMarker2)].stop_flag) {
-         let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. It cannot be chosen again.
-           Please choose other marker `);
-         player1Markers[mapMarkerToIndex.get(chooseAnotherMarker)].simpleMove(player1.redDiceRoll, player1.stopValue);
-       } else if(player1Markers[mapMarkerToIndex.get(userMarker2)].reached) {
-         let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
-         player1Markers[mapMarkerToIndex.get(chooseAnotherMarker)].simpleMove(player1.redDiceRoll, player1.stopValue);
-       }
-       else  {
-           player1Markers[mapMarkerToIndex.get(userMarker2)].simpleMove(player1.redDiceRoll, player1.stopValue);
-       }
-     }
+      player2.rollDice();
+      console.log(`Player 2 => Black dice roll: ${player2.blackDiceRoll}, Red dice roll: ${player2.redDiceRoll}, Stop value: ${player2.stopValue}`)
+      recurseGame(player2Markers,player2);
+    }
+    // console.log('player1 markers after ',player1Markers);
+    // console.log('player2 markers after ',player2Markers);
 
     player1Markers.forEach((marker) => {
       if(marker.card.value > -1) {
         let index = marker.position;
-        deck[index].markers += marker.name;
+        deck[index].player1markers += marker.name;
       }
     })
-    //console.log('Markers after ',player1Markers);
-    //console.log('Deck after ',deck);
-    Deck.displayBoard();
-    deck.forEach(card => {
-      card.markers = '';
-    })
-    player1Markers[0].stop_flag = player1Markers[1].stop_flag = player1Markers[2].stop_flag = false;
-  }
 
-  //console.log('markers final ',player1Markers);
+    player2Markers.forEach((marker) => {
+      if(marker.card.value > -1) {
+        let index = marker.position;
+        deck[index].player2markers += marker.name;
+      }
+    })
+
+    Deck.displayBoard();
+    // console.log('temp deck ',deck);
+
+    deck.forEach(card => {
+      card.player1markers = '';
+      card.player2markers = '';
+    })
+  }
 }
 
-playGame();
+//function to initiate the game
+function initiateGame() {
+  Deck.createDeck();
+  Deck.shuffleDeck();
+  console.log('shuffle deck');
+  console.log(deck);
+  Deck.checkEdgeCards();
+  //console.log(deck);
+  //console.log('initial deck ',deck);
+  console.log('Final valid deck');
+  Deck.displayBoard();
+  playGame();
+}
+
+
+var player1 = new Player();
+var player2 = new Player();
+
+var player1Markers = [];
+initializeMarkers(player1Markers);
+
+var player2Markers = [];
+initializeMarkers(player2Markers);
+
+initiateGame();
