@@ -3,7 +3,7 @@
 const minDiceRoll = 1;
 const maxCard = 15;
 const invalidCards = [0,1,2,11,12,13];
-const invalidPositions = [0,1,2,12,13,14];
+const invalidPositions = [0,1,2,51,52,53];
 var randomIndex = [];
 var newCards = [];
 const suitsMap = new Map([[-1, '\u25A0'], [0,'\u2660'], [1,'\u2665'], [2, '\u2666'], [3,'\u2663']]);
@@ -35,13 +35,13 @@ class Deck {
   static createDeck() {
     deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
     deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
-    let i = 0;
-    //for (let i = 0; i < 4; i++) {
+    //let i = 0;
+    for (let i = 0; i < 4; i++) {
       for (let j = 1; j <= 13; j++) {
         let obj = { suit: i, value: j, player1markers:'', player2markers:'' };
         deck.push(obj);
       }
-    //}
+    }
   }
 
   //function to shuffle the array. Refactored from best hand algo
@@ -237,6 +237,7 @@ var deck = new Array();
 var dice1 = new Dice(6,'black');
 var dice2 = new Dice(6,'red');
 
+//checks to see if the game is over for either player
 function checkGameOver() {
   if(player1Markers[0].reached && player1Markers[1].reached && player1Markers[2].reached)
     return [true,'Player 1 won the game'];
@@ -246,6 +247,7 @@ function checkGameOver() {
     return false;
 }
 
+//function to play the black dice roll on player marker
 function playBlackDice(userMarker1,playerMarkers, player) {
   if(playerMarkers[mapMarkerToIndex.get(userMarker1)].reached) {
     let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
@@ -255,6 +257,7 @@ function playBlackDice(userMarker1,playerMarkers, player) {
    }
 }
 
+//function to play the red dice roll on player marker
 function playRedDice(userMarker2,playerMarkers, player) {
   if(playerMarkers[mapMarkerToIndex.get(userMarker2)].stop_flag) {
     let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. Please choose other marker `);
@@ -268,6 +271,7 @@ function playRedDice(userMarker2,playerMarkers, player) {
   }
 }
 
+//recursive function that gets called until one of the players reaches the end
 function recurseGame(playerMarkers, player) {
   let userMarker1 = readlineSync.question(`Please provide which marker you want apply black dice roll to `);
   playBlackDice(userMarker1.toUpperCase(),playerMarkers, player);
