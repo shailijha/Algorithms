@@ -3,12 +3,13 @@
 const minDiceRoll = 1;
 const maxCard = 15;
 const invalidCards = [0,1,2,11,12,13];
-const invalidPositions = [0,1,2,51,52,53];
+const invalidPositions = [0,1,2,12,13,14];
 var randomIndex = [];
 var newCards = [];
 const suitsMap = new Map([[-1, '\u25A0'], [0,'\u2660'], [1,'\u2665'], [2, '\u2666'], [3,'\u2663']]);
 var mainstring = '';
 var readlineSync = require('readline-sync');
+const validMarkers = ['A', 'B', 'C', 'a', 'b', 'c'];
 
 class Dice {
   //constructor to initialize the dice. Refactored from simpled&d
@@ -35,13 +36,13 @@ class Deck {
   static createDeck() {
     deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
     deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
-    //let i = 0;
-    for (let i = 0; i < 4; i++) {
+    let i = 0;
+    //for (let i = 0; i < 4; i++) {
       for (let j = 1; j <= 13; j++) {
         let obj = { suit: i, value: j, player1markers:'', player2markers:'' };
         deck.push(obj);
       }
-    }
+    //}
   }
 
   //function to shuffle the array. Refactored from best hand algo
@@ -98,6 +99,8 @@ class Deck {
     Deck.swap(deck[deck.length-1], deck.length-1);
   }
 
+  //function to display board to user. it first displays the card values, then the player1 markers and lastly the
+  //player2 markers. Built using String builder concept
   static displayBoard() {
     let i = 0;
     let j = 0;
@@ -247,10 +250,15 @@ function checkGameOver() {
     return false;
 }
 
+/*special case: what to do if only one marker is left and it is stopped by the black dice roll?*/
+
 //function to play the black dice roll on player marker
 function playBlackDice(userMarker1,playerMarkers, player) {
   if(playerMarkers[mapMarkerToIndex.get(userMarker1)].reached) {
-    let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
+    let chooseAnotherMarker;
+    do {
+      chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
+    } while(playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].reached);
     playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].simpleMove(player.blackDiceRoll, player.stopValue);
   } else {
        playerMarkers[mapMarkerToIndex.get(userMarker1)].simpleMove(player.blackDiceRoll, player.stopValue);
@@ -260,20 +268,32 @@ function playBlackDice(userMarker1,playerMarkers, player) {
 //function to play the red dice roll on player marker
 function playRedDice(userMarker2,playerMarkers, player) {
   if(playerMarkers[mapMarkerToIndex.get(userMarker2)].stop_flag) {
-    let chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. Please choose other marker `);
+    let chooseAnotherMarker;
+    do {
+        chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. Please choose other marker `);
+    } while(playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].stop_flag);
     playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].simpleMove(player.redDiceRoll, player.stopValue);
   } else if(playerMarkers[mapMarkerToIndex.get(userMarker2)].reached) {
-    let chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
+    let chooseAnotherMarker;
+    do {
+        chooseAnotherMarker = readlineSync.question(`This marker already reached the end.Please choose other marker `);
+    } while(playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].reached);
     playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].simpleMove(player.redDiceRoll, player.stopValue);
   }
   else  {
       playerMarkers[mapMarkerToIndex.get(userMarker2)].simpleMove(player.redDiceRoll, player.stopValue);
   }
+  playerMarkers[0].stop_flag = playerMarkers[1].stop_flag = playerMarkers[2].stop_flag = false;
 }
 
 //recursive function that gets called until one of the players reaches the end
 function recurseGame(playerMarkers, player) {
-  let userMarker1 = readlineSync.question(`Please provide which marker you want apply black dice roll to `);
+  let userMarker1, userMarker2;
+
+  do {
+    userMarker1 = readlineSync.question(`Your black dice roll is ${player.blackDiceRoll}. Please provide which marker you want apply black dice roll to `);
+  } while(validMarkers.indexOf(userMarker1) == -1);
+
   playBlackDice(userMarker1.toUpperCase(),playerMarkers, player);
 
   let gameOver = checkGameOver();
@@ -283,12 +303,14 @@ function recurseGame(playerMarkers, player) {
     return gameOver;
   }
   else {
-    let userMarker2 = readlineSync.question(`Please provide which marker you want apply red dice roll to `);
+    do {
+        userMarker2 = readlineSync.question(`Your red dice roll is ${player.redDiceRoll}. Please provide which marker you want apply red dice roll to `);
+      } while(validMarkers.indexOf(userMarker2) == -1);
+
+    //let userMarker2 = readlineSync.question(`Please provide which marker you want apply red dice roll to `);
     playRedDice(userMarker2.toUpperCase(),playerMarkers, player);
     return gameOver;
   }
-
-  playerMarkers[0].stop_flag = playerMarkers[1].stop_flag = playerMarkers[2].stop_flag = false;
 }
 
 //function to play the game. Takes in the n players markers and actually plays the game using them.
@@ -331,6 +353,8 @@ function playGame() {
     Deck.displayBoard();
     // console.log('temp deck ',deck);
 
+    //console.clear();
+
     deck.forEach(card => {
       card.player1markers = '';
       card.player2markers = '';
@@ -338,7 +362,7 @@ function playGame() {
   }
 }
 
-//function to initiate the game
+//function to initiate the game. Deck is created, shuffled, checked for edge cards and playGame() is called on valid deck.
 function initiateGame() {
   Deck.createDeck();
   Deck.shuffleDeck();
