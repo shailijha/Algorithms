@@ -218,6 +218,9 @@ class Marker
       let paces = 1;
       while(paces < diceRollValue && this.position < (deck.length - 1) && this.card.value < stopValue) {
         this.position += 1;
+        if(this.postion > deck.length - 1) {
+          this.position = deck.length - 1;
+        }
         this.card = deck[this.position];
         paces++;
         /*console.log('current markers position ',this.position);
@@ -298,7 +301,7 @@ function playRedDice(userMarker2,playerMarkers, player) {
 
 //recursive function that gets called until one of the players reaches the end
 function recurseGame(playerMarkers, player) {
-  let userMarker1, userMarker2;
+  let userMarker1, userMarker2, gameOver;
 
   do {
     userMarker1 = readlineSync.question(`Your black dice roll is ${player.blackDiceRoll}. Please provide which marker you want apply black dice roll to `);
@@ -306,7 +309,7 @@ function recurseGame(playerMarkers, player) {
 
   playBlackDice(userMarker1.toUpperCase(),playerMarkers, player);
 
-  let gameOver = checkGameOver();
+  gameOver = checkGameOver();
 
   if(gameOver[0]) {
     //console.log(gameOver[1]);
@@ -319,6 +322,7 @@ function recurseGame(playerMarkers, player) {
 
     //let userMarker2 = readlineSync.question(`Please provide which marker you want apply red dice roll to `);
     playRedDice(userMarker2.toUpperCase(),playerMarkers, player);
+    gameOver = checkGameOver();
     return gameOver;
   }
 }
@@ -376,8 +380,8 @@ function playGame() {
 function initiateGame() {
   Deck.createDeck();
   Deck.shuffleDeck();
-  console.log('shuffle deck');
-  console.log(deck);
+  // console.log('shuffle deck');
+  // console.log(deck);
   Deck.checkEdgeCards();
   //console.log(deck);
   //console.log('initial deck ',deck);
