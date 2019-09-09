@@ -29,9 +29,19 @@ class Dice {
 }
 
 class Deck {
-  /*constructor(max) {
+  //constructor to initialize the deck
+  // constructor(num_suits, max_card) {
+  //   deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
+  //   deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
+  //   let i = 0;
+  //   //for (let i = 0; i < 4; i++) {
+  //     for (let j = 1; j <= 13; j++) {
+  //       let obj = { suit: i, value: j, player1markers:'', player2markers:'' };
+  //       deck.push(obj);
+  //     }
+  //   //}
+  // }
 
-  }*/
   //function to create the deck. Refactored from best hand algo
   static createDeck() {
     deck.push({suit:-1, value: 0, player1markers:'', player2markers:''});
