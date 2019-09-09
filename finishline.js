@@ -264,6 +264,17 @@ function checkGameOver() {
 }
 
 /*special case: what to do if only one marker is left and it is stopped by the black dice roll?*/
+function checkTwoMarkersReached(playerMarkers) {
+  let flag1 = playerMarkers[0].reached;
+  let flag2 = playerMarkers[1].reached;
+  let flag3 = playerMarkers[2].reached;
+
+  if((flag1 && flag2 && !flag3) || (flag2 && flag3 && !flag1) || (flag1 && flag3 && !flag2)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 //function to play the black dice roll on player marker
 function playBlackDice(userMarker1,playerMarkers, player) {
@@ -284,6 +295,10 @@ function playRedDice(userMarker2,playerMarkers, player) {
     let chooseAnotherMarker;
     do {
         chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. Please choose other marker `);
+        if(checkTwoMarkersReached(playerMarkers)) {
+          playerMarkers[mapMarkerToIndex.get(userMarker2)].simpleMove(player.redDiceRoll, player.stopValue);
+          break;
+        }
     } while(playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].stop_flag);
     playerMarkers[mapMarkerToIndex.get(chooseAnotherMarker.toUpperCase())].simpleMove(player.redDiceRoll, player.stopValue);
   } else if(playerMarkers[mapMarkerToIndex.get(userMarker2)].reached) {
