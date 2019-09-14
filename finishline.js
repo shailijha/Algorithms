@@ -296,6 +296,7 @@ function playRedDice(userMarker2,playerMarkers, player) {
     do {
         chooseAnotherMarker = readlineSync.question(`This marker was stopped by the stop value in the first dice roll. Please choose other marker `);
         if(checkTwoMarkersReached(playerMarkers)) {
+          console.log('2 out of 3 markers have reached the end is true');
           playerMarkers[mapMarkerToIndex.get(userMarker2)].simpleMove(player.redDiceRoll, player.stopValue);
           break;
         }
